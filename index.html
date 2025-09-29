@@ -1,11 +1,25 @@
 <!doctype html>
 
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Lit Starter Kit</title>
-  </head>
-  <body>
-    <a href="/dev/index.html">Component Demo</a>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee Management</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+  </style>
+</head>
+
+<body>
+  <app-container></app-container>
+  <script type="module" src="/src/components/app-container.js"></script>
+  <script type="module" src="/src/components/nav-menu.js"></script>
+  <script type="module">
+    import { i18n } from '/src/i18n/translations.js';
+    i18n.init();
+  </script>
+</body>
+
 </html>
