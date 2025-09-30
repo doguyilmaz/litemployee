@@ -1,5 +1,6 @@
 import {LitElement, html, css} from 'lit';
 import {Router} from '@vaadin/router';
+import './nav-menu.js';
 
 export class AppContainer extends LitElement {
   static styles = css`
