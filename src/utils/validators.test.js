@@ -171,7 +171,7 @@ suite('Validators', () => {
 
     test('allows same email when updating same employee', () => {
       const emp = employeeStore.add(validData);
-      const result = validateEmployee(validData, true, emp.id);
+      const result = validateEmployee(validData, emp.id);
       assert.strictEqual(result.isValid, true);
     });
 
