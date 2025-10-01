@@ -144,12 +144,52 @@ export class EmployeeList extends LitElement {
         padding: 1rem;
       }
 
+      h1 {
+        font-size: 1.5rem;
+      }
+
       table {
         display: none;
       }
 
       .view-toggle {
         display: none;
+      }
+
+      .list-item {
+        padding: 1rem;
+      }
+
+      .actions {
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        flex: 1;
+        min-width: 100px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      :host {
+        padding: 0.75rem;
+      }
+
+      h1 {
+        font-size: 1.25rem;
+      }
+
+      .list-item-header {
+        font-size: 1rem;
+      }
+
+      .list-item-detail {
+        font-size: 0.875rem;
+      }
+
+      .btn {
+        padding: 0.5rem;
+        font-size: 0.8125rem;
       }
     }
   `;
@@ -194,6 +234,16 @@ export class EmployeeList extends LitElement {
     this.viewMode = this.viewMode === 'table' ? 'list' : 'table';
   }
 
+  handleEdit(id) {
+    window.location.href = `/edit/${id}`;
+  }
+
+  handleDelete(id) {
+    if (confirm(i18n.t('confirmDelete'))) {
+      employeeStore.delete(id);
+    }
+  }
+
   renderTableView() {
     return html`
       <table>
@@ -218,8 +268,18 @@ export class EmployeeList extends LitElement {
                 <td>${emp.position}</td>
                 <td>
                   <div class="actions">
-                    <button class="btn btn-edit">Edit</button>
-                    <button class="btn btn-delete">Delete</button>
+                    <button
+                      class="btn btn-edit"
+                      @click=${() => this.handleEdit(emp.id)}
+                    >
+                      ${i18n.t('edit')}
+                    </button>
+                    <button
+                      class="btn btn-delete"
+                      @click=${() => this.handleDelete(emp.id)}
+                    >
+                      ${i18n.t('delete')}
+                    </button>
                   </div>
                 </td>
               </tr>
@@ -244,8 +304,18 @@ export class EmployeeList extends LitElement {
                 ${emp.department} - ${emp.position}
               </div>
               <div class="actions" style="margin-top: 1rem;">
-                <button class="btn btn-edit">Edit</button>
-                <button class="btn btn-delete">Delete</button>
+                <button
+                  class="btn btn-edit"
+                  @click=${() => this.handleEdit(emp.id)}
+                >
+                  ${i18n.t('edit')}
+                </button>
+                <button
+                  class="btn btn-delete"
+                  @click=${() => this.handleDelete(emp.id)}
+                >
+                  ${i18n.t('delete')}
+                </button>
               </div>
             </div>
           `

@@ -3,11 +3,17 @@ const translations = {
     employeeList: 'Employees',
     addEmployee: 'Add Employee',
     editEmployee: 'Edit Employee',
+    edit: 'Edit',
+    delete: 'Delete',
+    confirmDelete: 'Are you sure you want to delete this employee?',
   },
   tr: {
     employeeList: 'Çalışanlar',
     addEmployee: 'Çalışan Ekle',
     editEmployee: 'Çalışanı Düzenle',
+    edit: 'Düzenle',
+    delete: 'Sil',
+    confirmDelete: 'Bu çalışanı silmek istediğinizden emin misiniz?',
   },
 };
 
