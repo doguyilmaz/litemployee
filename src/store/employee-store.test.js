@@ -1,112 +1,116 @@
-import {expect} from '@open-wc/testing';
+import {assert} from '@open-wc/testing';
 import {employeeStore, DEPARTMENTS, POSITIONS} from './employee-store.js';
 
-describe('EmployeeStore', () => {
-  beforeEach(() => {
+suite('EmployeeStore', () => {
+  setup(() => {
     localStorage.clear();
     employeeStore.employees = [];
   });
 
-  describe('Constants', () => {
-    it('exports DEPARTMENTS', () => {
-      expect(DEPARTMENTS).to.deep.equal(['Analytics', 'Tech']);
+  suite('Constants', () => {
+    test('exports DEPARTMENTS', () => {
+      assert.deepEqual(DEPARTMENTS, ['Analytics', 'Tech']);
     });
 
-    it('exports POSITIONS', () => {
-      expect(POSITIONS).to.deep.equal(['Junior', 'Medior', 'Senior']);
+    test('exports POSITIONS', () => {
+      assert.deepEqual(POSITIONS, ['Junior', 'Medior', 'Senior']);
     });
   });
 
-  describe('getAll', () => {
-    it('returns empty array when no employees', () => {
+  suite('getAll', () => {
+    test('returns empty array when no employees', () => {
       const result = employeeStore.getAll();
-      expect(result).to.be.an('array').that.is.empty;
+      assert.isArray(result);
+      assert.isEmpty(result);
     });
 
-    it('returns all employees', () => {
+    test('returns all employees', () => {
       const emp1 = employeeStore.add({firstName: 'John', lastName: 'Doe'});
       const emp2 = employeeStore.add({firstName: 'Jane', lastName: 'Smith'});
 
       const result = employeeStore.getAll();
-      expect(result).to.have.lengthOf(2);
-      expect(result[0].id).to.equal(emp1.id);
-      expect(result[1].id).to.equal(emp2.id);
+      assert.lengthOf(result, 2);
+      assert.equal(result[0].id, emp1.id);
+      assert.equal(result[1].id, emp2.id);
     });
 
-    it('returns a copy of employees array', () => {
+    test('returns a copy of employees array', () => {
       employeeStore.add({firstName: 'John', lastName: 'Doe'});
       const result = employeeStore.getAll();
       result.push({id: 'fake'});
 
-      expect(employeeStore.getAll()).to.have.lengthOf(1);
+      assert.lengthOf(employeeStore.getAll(), 1);
     });
   });
 
-  describe('getById', () => {
-    it('returns null when employee not found', () => {
+  suite('getById', () => {
+    test('returns null when employee not found', () => {
       const result = employeeStore.getById('nonexistent');
-      expect(result).to.be.undefined;
+      assert.isUndefined(result);
     });
 
-    it('returns employee by id', () => {
+    test('returns employee by id', () => {
       const emp = employeeStore.add({firstName: 'John', lastName: 'Doe'});
       const result = employeeStore.getById(emp.id);
 
-      expect(result).to.exist;
-      expect(result.id).to.equal(emp.id);
-      expect(result.firstName).to.equal('John');
+      assert.isDefined(result);
+      assert.equal(result.id, emp.id);
+      assert.equal(result.firstName, 'John');
     });
   });
 
-  describe('add', () => {
-    it('adds employee with generated id', () => {
+  suite('add', () => {
+    test('adds employee with generated id', () => {
       const emp = employeeStore.add({
         firstName: 'John',
         lastName: 'Doe',
         email: 'john@test.com',
       });
 
-      expect(emp.id).to.be.a('string');
-      expect(emp.firstName).to.equal('John');
-      expect(employeeStore.getAll()).to.have.lengthOf(1);
+      assert.isString(emp.id);
+      assert.equal(emp.firstName, 'John');
+      assert.lengthOf(employeeStore.getAll(), 1);
     });
 
-    it('adds createdAt timestamp', () => {
-      const before = new Date().toISOString();
+    test('adds createdAt timestamp', () => {
+      const before = Date.now();
       const emp = employeeStore.add({firstName: 'John', lastName: 'Doe'});
-      const after = new Date().toISOString();
+      const after = Date.now();
 
-      expect(emp.createdAt).to.be.a('string');
-      expect(emp.createdAt).to.be.at.least(before);
-      expect(emp.createdAt).to.be.at.most(after);
+      assert.isString(emp.createdAt);
+      const createdAtTime = new Date(emp.createdAt).getTime();
+      assert.isAtLeast(createdAtTime, before);
+      assert.isAtMost(createdAtTime, after);
     });
 
-    it('persists to localStorage', () => {
+    test('persists to localStorage', () => {
       employeeStore.add({firstName: 'John', lastName: 'Doe'});
 
       const stored = JSON.parse(localStorage.getItem('employees'));
-      expect(stored).to.have.lengthOf(1);
-      expect(stored[0].firstName).to.equal('John');
+      assert.lengthOf(stored, 1);
+      assert.equal(stored[0].firstName, 'John');
     });
 
-    it('dispatches employees-changed event', (done) => {
-      employeeStore.addEventListener('employees-changed', (e) => {
-        expect(e.detail).to.be.an('array');
-        expect(e.detail).to.have.lengthOf(1);
+    test('dispatches employees-changed event', (done) => {
+      const handler = (e) => {
+        assert.isArray(e.detail);
+        assert.lengthOf(e.detail, 1);
+        employeeStore.removeEventListener('employees-changed', handler);
         done();
-      });
+      };
 
+      employeeStore.addEventListener('employees-changed', handler);
       employeeStore.add({firstName: 'John', lastName: 'Doe'});
     });
   });
 
-  describe('update', () => {
-    it('returns null when employee not found', () => {
+  suite('update', () => {
+    test('returns null when employee not found', () => {
       const result = employeeStore.update('nonexistent', {firstName: 'Jane'});
-      expect(result).to.be.null;
+      assert.isNull(result);
     });
 
-    it('updates employee fields', () => {
+    test('updates employee fields', () => {
       const emp = employeeStore.add({
         firstName: 'John',
         lastName: 'Doe',
@@ -118,67 +122,70 @@ describe('EmployeeStore', () => {
         email: 'jane@test.com',
       });
 
-      expect(updated.firstName).to.equal('Jane');
-      expect(updated.lastName).to.equal('Doe');
-      expect(updated.email).to.equal('jane@test.com');
+      assert.equal(updated.firstName, 'Jane');
+      assert.equal(updated.lastName, 'Doe');
+      assert.equal(updated.email, 'jane@test.com');
     });
 
-    it('preserves id on update', () => {
+    test('preserves id on update', () => {
       const emp = employeeStore.add({firstName: 'John', lastName: 'Doe'});
       const updated = employeeStore.update(emp.id, {
         id: 'should-not-change',
         firstName: 'Jane',
       });
 
-      expect(updated.id).to.equal(emp.id);
+      assert.equal(updated.id, emp.id);
     });
 
-    it('adds updatedAt timestamp', () => {
+    test('adds updatedAt timestamp', () => {
       const emp = employeeStore.add({firstName: 'John', lastName: 'Doe'});
-      const before = new Date().toISOString();
+      const before = Date.now();
       const updated = employeeStore.update(emp.id, {firstName: 'Jane'});
-      const after = new Date().toISOString();
+      const after = Date.now();
 
-      expect(updated.updatedAt).to.be.a('string');
-      expect(updated.updatedAt).to.be.at.least(before);
-      expect(updated.updatedAt).to.be.at.most(after);
+      assert.isString(updated.updatedAt);
+      const updatedAtTime = new Date(updated.updatedAt).getTime();
+      assert.isAtLeast(updatedAtTime, before);
+      assert.isAtMost(updatedAtTime, after);
     });
 
-    it('persists to localStorage', () => {
+    test('persists to localStorage', () => {
       const emp = employeeStore.add({firstName: 'John', lastName: 'Doe'});
       employeeStore.update(emp.id, {firstName: 'Jane'});
 
       const stored = JSON.parse(localStorage.getItem('employees'));
-      expect(stored[0].firstName).to.equal('Jane');
+      assert.equal(stored[0].firstName, 'Jane');
     });
 
-    it('dispatches employees-changed event', (done) => {
+    test('dispatches employees-changed event', (done) => {
       const emp = employeeStore.add({firstName: 'John', lastName: 'Doe'});
 
-      employeeStore.addEventListener('employees-changed', (e) => {
-        expect(e.detail).to.be.an('array');
+      const handler = (e) => {
+        assert.isArray(e.detail);
+        employeeStore.removeEventListener('employees-changed', handler);
         done();
-      });
+      };
 
+      employeeStore.addEventListener('employees-changed', handler);
       employeeStore.update(emp.id, {firstName: 'Jane'});
     });
   });
 
-  describe('delete', () => {
-    it('returns false when employee not found', () => {
+  suite('delete', () => {
+    test('returns false when employee not found', () => {
       const result = employeeStore.delete('nonexistent');
-      expect(result).to.be.false;
+      assert.isFalse(result);
     });
 
-    it('deletes employee by id', () => {
+    test('deletes employee by id', () => {
       const emp = employeeStore.add({firstName: 'John', lastName: 'Doe'});
       const result = employeeStore.delete(emp.id);
 
-      expect(result).to.be.true;
-      expect(employeeStore.getAll()).to.be.empty;
+      assert.isTrue(result);
+      assert.isEmpty(employeeStore.getAll());
     });
 
-    it('deletes correct employee from multiple', () => {
+    test('deletes correct employee from multiple', () => {
       const emp1 = employeeStore.add({firstName: 'John', lastName: 'Doe'});
       const emp2 = employeeStore.add({firstName: 'Jane', lastName: 'Smith'});
       const emp3 = employeeStore.add({firstName: 'Bob', lastName: 'Johnson'});
@@ -186,32 +193,34 @@ describe('EmployeeStore', () => {
       employeeStore.delete(emp2.id);
 
       const remaining = employeeStore.getAll();
-      expect(remaining).to.have.lengthOf(2);
-      expect(remaining[0].id).to.equal(emp1.id);
-      expect(remaining[1].id).to.equal(emp3.id);
+      assert.lengthOf(remaining, 2);
+      assert.equal(remaining[0].id, emp1.id);
+      assert.equal(remaining[1].id, emp3.id);
     });
 
-    it('persists to localStorage', () => {
+    test('persists to localStorage', () => {
       const emp = employeeStore.add({firstName: 'John', lastName: 'Doe'});
       employeeStore.delete(emp.id);
 
       const stored = JSON.parse(localStorage.getItem('employees'));
-      expect(stored).to.be.empty;
+      assert.isEmpty(stored);
     });
 
-    it('dispatches employees-changed event', (done) => {
+    test('dispatches employees-changed event', (done) => {
       const emp = employeeStore.add({firstName: 'John', lastName: 'Doe'});
 
-      employeeStore.addEventListener('employees-changed', () => {
+      const handler = () => {
+        employeeStore.removeEventListener('employees-changed', handler);
         done();
-      });
+      };
 
+      employeeStore.addEventListener('employees-changed', handler);
       employeeStore.delete(emp.id);
     });
   });
 
-  describe('loadFromStorage', () => {
-    it('loads employees from localStorage', () => {
+  suite('loadFromStorage', () => {
+    test('loads employees from localStorage', () => {
       const employees = [
         {id: '1', firstName: 'John', lastName: 'Doe'},
         {id: '2', firstName: 'Jane', lastName: 'Smith'},
@@ -219,19 +228,21 @@ describe('EmployeeStore', () => {
       localStorage.setItem('employees', JSON.stringify(employees));
 
       const loaded = employeeStore.loadFromStorage();
-      expect(loaded).to.have.lengthOf(2);
-      expect(loaded[0].firstName).to.equal('John');
+      assert.lengthOf(loaded, 2);
+      assert.equal(loaded[0].firstName, 'John');
     });
 
-    it('returns empty array when localStorage is empty', () => {
+    test('returns empty array when localStorage is empty', () => {
       const loaded = employeeStore.loadFromStorage();
-      expect(loaded).to.be.an('array').that.is.empty;
+      assert.isArray(loaded);
+      assert.isEmpty(loaded);
     });
 
-    it('returns empty array when localStorage has invalid JSON', () => {
+    test('returns empty array when localStorage has invalid JSON', () => {
       localStorage.setItem('employees', 'invalid json');
       const loaded = employeeStore.loadFromStorage();
-      expect(loaded).to.be.an('array').that.is.empty;
+      assert.isArray(loaded);
+      assert.isEmpty(loaded);
     });
   });
 });

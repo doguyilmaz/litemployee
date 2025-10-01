@@ -1,80 +1,80 @@
-import {fixture, html, expect} from '@open-wc/testing';
+import {fixture, html, assert} from '@open-wc/testing';
 import './nav-menu.js';
 import {i18n} from '../i18n/translations.js';
 
-describe('NavMenu', () => {
-  beforeEach(() => {
+suite('nav-menu', () => {
+  setup(() => {
     localStorage.clear();
     i18n.set('en');
   });
 
-  it('renders navigation links', async () => {
+  test('renders navigation links', async () => {
     const el = await fixture(html`<nav-menu></nav-menu>`);
     const nav = el.shadowRoot.querySelector('nav');
-    expect(nav).to.exist;
+    assert.exists(nav);
 
     const links = el.shadowRoot.querySelectorAll('a');
-    expect(links.length).to.equal(2);
+    assert.lengthOf(links, 2);
   });
 
-  it('renders language toggle button', async () => {
+  test('renders language toggle button', async () => {
     const el = await fixture(html`<nav-menu></nav-menu>`);
     const button = el.shadowRoot.querySelector('button');
-    expect(button).to.exist;
-    expect(button.textContent).to.equal('TR');
+    assert.exists(button);
+    assert.equal(button.textContent, 'TR');
   });
 
-  it('toggles language when button clicked', async () => {
-    const el = await fixture(html`<nav-menu></nav-menu>`);
-    const button = el.shadowRoot.querySelector('button');
-
-    button.click();
-    await el.updateComplete;
-
-    expect(button.textContent).to.equal('EN');
-    expect(i18n.getCurrentLanguage()).to.equal('tr');
-  });
-
-  it('persists language to localStorage', async () => {
+  test('toggles language when button clicked', async () => {
     const el = await fixture(html`<nav-menu></nav-menu>`);
     const button = el.shadowRoot.querySelector('button');
 
     button.click();
     await el.updateComplete;
 
-    expect(localStorage.getItem('app-language')).to.equal('tr');
+    assert.equal(button.textContent, 'EN');
+    assert.equal(i18n.getCurrentLanguage(), 'tr');
   });
 
-  it('loads language from localStorage on init', async () => {
+  test('persists language to localStorage', async () => {
+    const el = await fixture(html`<nav-menu></nav-menu>`);
+    const button = el.shadowRoot.querySelector('button');
+
+    button.click();
+    await el.updateComplete;
+
+    assert.equal(localStorage.getItem('app-language'), 'tr');
+  });
+
+  test('loads language from localStorage on init', async () => {
     localStorage.setItem('app-language', 'tr');
     i18n.init();
 
     const el = await fixture(html`<nav-menu></nav-menu>`);
     const button = el.shadowRoot.querySelector('button');
 
-    expect(button.textContent).to.equal('EN');
-    expect(i18n.getCurrentLanguage()).to.equal('tr');
+    assert.equal(button.textContent, 'EN');
+    assert.equal(i18n.getCurrentLanguage(), 'tr');
   });
 
-  it('updates on language-changed event', async () => {
+  test('updates on language-changed event', async () => {
     const el = await fixture(html`<nav-menu></nav-menu>`);
 
     i18n.set('tr');
     await el.updateComplete;
 
     const button = el.shadowRoot.querySelector('button');
-    expect(button.textContent).to.equal('EN');
+    assert.equal(button.textContent, 'EN');
   });
 
-  it('renders translated links', async () => {
+  test('renders translated links', async () => {
     const el = await fixture(html`<nav-menu></nav-menu>`);
     let links = el.shadowRoot.querySelectorAll('a');
-    expect(links[0].textContent).to.equal('Employees');
+    assert.equal(links[0].textContent, 'Employees');
 
     i18n.set('tr');
     await el.updateComplete;
 
     links = el.shadowRoot.querySelectorAll('a');
-    expect(links[0].textContent).to.equal('Çalışanlar');
+    assert.equal(links[0].textContent, 'Çalışanlar');
   });
 });
