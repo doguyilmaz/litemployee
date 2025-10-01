@@ -17,29 +17,29 @@ export class EmployeeForm extends LitElement {
   static styles = css`
     :host {
       display: block;
-      padding: 2rem;
+      padding: var(--spacing-xl);
       max-width: 800px;
       margin: 0 auto;
     }
 
     h1 {
-      margin: 0 0 2rem 0;
-      font-size: 1.75rem;
-      color: #333;
+      margin: 0 0 var(--spacing-xl) 0;
+      font-size: var(--font-xxxl);
+      color: var(--color-text);
     }
 
     form {
-      background: white;
-      padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      background: var(--color-surface);
+      padding: var(--spacing-xl);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-base);
     }
 
     .form-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      margin-bottom: 1.5rem;
+      gap: var(--spacing-lg);
+      margin-bottom: var(--spacing-lg);
     }
 
     .form-group {
@@ -52,21 +52,21 @@ export class EmployeeForm extends LitElement {
     }
 
     label {
-      font-weight: 500;
-      margin-bottom: 0.5rem;
-      color: #333;
+      font-weight: var(--weight-medium);
+      margin-bottom: var(--spacing-sm);
+      color: var(--color-text);
     }
 
     label .required {
-      color: #dc3545;
+      color: var(--color-danger);
     }
 
     input,
     select {
       padding: 0.625rem;
-      border: 1px solid #dee2e6;
-      border-radius: 4px;
-      font-size: 1rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      font-size: var(--font-base);
       font-family: inherit;
       transition: border-color 0.2s;
     }
@@ -74,77 +74,77 @@ export class EmployeeForm extends LitElement {
     input:focus,
     select:focus {
       outline: none;
-      border-color: #007bff;
+      border-color: var(--color-primary);
     }
 
     input.error,
     select.error {
-      border-color: #dc3545;
+      border-color: var(--color-danger);
     }
 
     .error-message {
-      color: #dc3545;
-      font-size: 0.875rem;
-      margin-top: 0.25rem;
+      color: var(--color-danger);
+      font-size: var(--font-sm);
+      margin-top: var(--spacing-xs);
     }
 
     .form-actions {
       display: flex;
-      gap: 1rem;
-      margin-top: 2rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid #dee2e6;
+      gap: var(--spacing-md);
+      margin-top: var(--spacing-xl);
+      padding-top: var(--spacing-lg);
+      border-top: 1px solid var(--color-border);
     }
 
     .btn {
-      padding: 0.625rem 1.5rem;
+      padding: 0.625rem var(--spacing-lg);
       border: 1px solid;
-      border-radius: 4px;
-      font-size: 1rem;
-      font-weight: 500;
+      border-radius: var(--radius-sm);
+      font-size: var(--font-base);
+      font-weight: var(--weight-medium);
       cursor: pointer;
       transition: all 0.2s;
     }
 
     .btn-primary {
-      background: #007bff;
-      border-color: #007bff;
-      color: white;
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: var(--color-surface);
     }
 
     .btn-primary:hover {
-      background: #0056b3;
-      border-color: #0056b3;
+      background: var(--color-primary-hover);
+      border-color: var(--color-primary-hover);
     }
 
     .btn-secondary {
-      background: white;
-      border-color: #6c757d;
-      color: #6c757d;
+      background: var(--color-surface);
+      border-color: var(--color-text-light);
+      color: var(--color-text-light);
     }
 
     .btn-secondary:hover {
-      background: #6c757d;
-      color: white;
+      background: var(--color-text-light);
+      color: var(--color-surface);
     }
 
     @media (max-width: 768px) {
       :host {
-        padding: 1rem;
+        padding: var(--spacing-md);
       }
 
       h1 {
-        font-size: 1.5rem;
+        font-size: var(--font-xxl);
       }
 
       form {
-        padding: 1.5rem;
+        padding: var(--spacing-lg);
       }
 
       .form-row {
         grid-template-columns: 1fr;
-        gap: 1rem;
-        margin-bottom: 1rem;
+        gap: var(--spacing-md);
+        margin-bottom: var(--spacing-md);
       }
 
       .form-actions {
@@ -162,12 +162,12 @@ export class EmployeeForm extends LitElement {
       }
 
       form {
-        padding: 1rem;
+        padding: var(--spacing-md);
       }
 
       h1 {
-        font-size: 1.25rem;
-        margin-bottom: 1.5rem;
+        font-size: var(--font-xl);
+        margin-bottom: var(--spacing-lg);
       }
 
       input,

@@ -25,52 +25,56 @@ export class EmployeeList extends LitElement {
 
     h1 {
       margin: 0;
-      font-size: 1.75rem;
-      color: #333;
+      font-size: var(--font-xxxl);
+      color: var(--color-primary);
+      font-weight: var(--weight-semibold);
     }
 
     .view-toggle {
-      padding: 0.5rem 1rem;
-      border: 1px solid #ff6300;
-      border-radius: 4px;
-      background: white;
-      color: #ff6300;
-      font-weight: 500;
+      padding: var(--spacing-sm) var(--spacing-md);
+      border: 1px solid var(--color-primary);
+      border-radius: var(--radius-sm);
+      background: var(--color-surface);
+      color: var(--color-primary);
+      font-weight: var(--weight-medium);
       cursor: pointer;
       transition: all 0.2s;
     }
 
     .view-toggle:hover {
-      background: #ff6300;
-      color: white;
+      background: var(--color-primary);
+      color: var(--color-surface);
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      background: white;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      background: var(--color-surface);
+      box-shadow: var(--shadow-base);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
     }
 
     thead {
-      background: #f8f9fa;
+      background: var(--color-primary-light);
     }
 
     th {
       text-align: left;
-      padding: 1rem;
-      font-weight: 600;
-      color: #495057;
-      border-bottom: 2px solid #dee2e6;
+      padding: var(--spacing-md);
+      font-weight: var(--weight-semibold);
+      color: var(--color-primary);
+      border-bottom: 2px solid var(--color-border-light);
     }
 
     td {
-      padding: 1rem;
-      border-bottom: 1px solid #dee2e6;
+      padding: var(--spacing-md);
+      border-bottom: 1px solid var(--color-border-light);
+      color: var(--color-text);
     }
 
     tr:hover {
-      background: #f8f9fa;
+      background: var(--color-background);
     }
 
     .list-view {
@@ -79,22 +83,23 @@ export class EmployeeList extends LitElement {
     }
 
     .list-item {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      background: var(--color-surface);
+      padding: var(--spacing-lg);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-base);
     }
 
     .list-item-header {
-      font-weight: 600;
-      font-size: 1.125rem;
-      margin-bottom: 0.5rem;
-      color: #333;
+      font-weight: var(--weight-semibold);
+      font-size: var(--font-lg);
+      margin-bottom: var(--spacing-sm);
+      color: var(--color-text);
     }
 
     .list-item-detail {
-      color: #6c757d;
-      margin: 0.25rem 0;
+      color: var(--color-text-light);
+      margin: var(--spacing-xs) 0;
+      font-size: var(--font-sm);
     }
 
     .actions {
@@ -103,40 +108,42 @@ export class EmployeeList extends LitElement {
     }
 
     .btn {
-      padding: 0.375rem 0.75rem;
+      padding: var(--spacing-sm) var(--spacing-md);
       border: 1px solid;
-      border-radius: 4px;
-      font-size: 0.875rem;
+      border-radius: var(--radius-sm);
+      font-size: var(--font-sm);
+      font-weight: var(--weight-medium);
       cursor: pointer;
       transition: all 0.2s;
     }
 
     .btn-edit {
-      border-color: #007bff;
-      background: white;
-      color: #007bff;
+      border-color: var(--color-primary);
+      background: var(--color-surface);
+      color: var(--color-primary);
     }
 
     .btn-edit:hover {
-      background: #007bff;
-      color: white;
+      background: var(--color-primary);
+      color: var(--color-surface);
     }
 
     .btn-delete {
-      border-color: #dc3545;
-      background: white;
-      color: #dc3545;
+      border-color: var(--color-danger);
+      background: var(--color-surface);
+      color: var(--color-danger);
     }
 
     .btn-delete:hover {
-      background: #dc3545;
-      color: white;
+      background: var(--color-danger);
+      color: var(--color-surface);
     }
 
     .empty {
       text-align: center;
-      padding: 3rem;
-      color: #6c757d;
+      padding: var(--spacing-xxl);
+      color: var(--color-text-light);
+      font-size: var(--font-lg);
     }
 
     @media (max-width: 768px) {

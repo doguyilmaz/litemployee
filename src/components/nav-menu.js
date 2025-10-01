@@ -9,27 +9,27 @@ export class NavMenu extends LitElement {
   static styles = css`
     :host {
       display: block;
-      border-bottom: 1px solid #e0e0e0;
+      border-bottom: 1px solid var(--color-border-light);
     }
 
     nav {
       display: flex;
       align-items: center;
-      gap: 1.5rem;
-      padding: 1rem 2rem;
+      gap: var(--spacing-lg);
+      padding: var(--spacing-md) var(--spacing-xl);
       max-width: 1200px;
       margin: 0 auto;
     }
 
     a {
-      color: #333;
+      color: var(--color-text);
       text-decoration: none;
-      font-weight: 500;
+      font-weight: var(--weight-medium);
       transition: color 0.2s;
     }
 
     a:hover {
-      color: #ff6300;
+      color: var(--color-primary);
     }
 
     .spacer {
@@ -37,26 +37,26 @@ export class NavMenu extends LitElement {
     }
 
     button {
-      padding: 0.5rem 1rem;
-      border: 1px solid #ff6300;
-      border-radius: 4px;
-      background: white;
-      color: #ff6300;
-      font-weight: 500;
+      padding: var(--spacing-sm) var(--spacing-md);
+      border: 1px solid var(--color-primary);
+      border-radius: var(--radius-sm);
+      background: var(--color-surface);
+      color: var(--color-primary);
+      font-weight: var(--weight-medium);
       cursor: pointer;
       transition: all 0.2s;
     }
 
     button:hover {
-      background: #ff6300;
-      color: white;
+      background: var(--color-primary);
+      color: var(--color-surface);
     }
 
     @media (max-width: 640px) {
       nav {
         flex-wrap: wrap;
-        padding: 1rem;
-        gap: 1rem;
+        padding: var(--spacing-md);
+        gap: var(--spacing-md);
       }
 
       .spacer {
