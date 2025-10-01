@@ -72,11 +72,25 @@ export class NavMenu extends LitElement {
   constructor() {
     super();
     this.lang = i18n.getCurrentLanguage();
+    this.boundHandleLangChange = this.handleLanguageChange.bind(this);
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    window.addEventListener('language-changed', this.boundHandleLangChange);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    window.removeEventListener('language-changed', this.boundHandleLangChange);
+  }
+
+  handleLanguageChange(e) {
+    this.lang = e.detail.lang;
   }
 
   toggleLanguage() {
     this.lang = i18n.toggle();
-    window.dispatchEvent(new CustomEvent('language-changed'));
   }
 
   render() {

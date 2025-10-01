@@ -11,6 +11,8 @@ const translations = {
   },
 };
 
+const LANG_KEY = 'app-language';
+
 export const i18n = (() => {
   let currentLang = 'en';
 
@@ -19,6 +21,10 @@ export const i18n = (() => {
       if (translations[lang]) {
         currentLang = lang;
         document.documentElement.lang = lang;
+        localStorage.setItem(LANG_KEY, lang);
+        window.dispatchEvent(
+          new CustomEvent('language-changed', {detail: {lang}})
+        );
       }
     },
 
@@ -37,7 +43,8 @@ export const i18n = (() => {
     },
 
     init() {
-      const htmlLang = document.documentElement.lang || 'en';
+      const stored = localStorage.getItem(LANG_KEY);
+      const htmlLang = stored || document.documentElement.lang || 'en';
       this.set(htmlLang);
     },
   };
