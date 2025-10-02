@@ -1,19 +1,8 @@
-import {LitElement, html, css, svg} from 'lit';
+import {LitElement, html, css} from 'lit';
 import {employeeStore} from '../store/employee-store.js';
 import {i18n} from '../i18n/translations.js';
+import {tableIcon, gridIcon} from '../utils/icons.js';
 import './confirm-dialog.js';
-
-const tableIcon = svg`
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <line x1="8" x2="21" y1="6" y2="6"/><line x1="8" x2="21" y1="12" y2="12"/><line x1="8" x2="21" y1="18" y2="18"/><line x1="3" x2="3.01" y1="6" y2="6"/><line x1="3" x2="3.01" y1="12" y2="12"/><line x1="3" x2="3.01" y1="18" y2="18"/>
-  </svg>
-`;
-
-const gridIcon = svg`
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>
-  </svg>
-`;
 
 export class EmployeeList extends LitElement {
   static properties = {
