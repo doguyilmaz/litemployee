@@ -16,6 +16,7 @@ export class EmployeeList extends LitElement {
     _itemsPerPage: {type: Number, state: true},
     _sortField: {type: String, state: true},
     _sortDirection: {type: String, state: true},
+    _searchQuery: {type: String, state: true},
   };
 
   static styles = css`
@@ -46,6 +47,37 @@ export class EmployeeList extends LitElement {
       font-size: var(--font-xxxl);
       color: var(--color-primary);
       font-weight: var(--weight-semibold);
+    }
+
+    .search-box {
+      flex: 1;
+      max-width: 400px;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 0.625rem 2.5rem 0.625rem 1rem;
+      border: 1.5px solid var(--color-border);
+      border-radius: var(--radius-md);
+      font-size: 0.9375rem;
+      transition: all 0.2s;
+      box-sizing: border-box;
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(255, 98, 0, 0.1);
+    }
+
+    .search-box iconify-icon {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--color-text-light);
+      pointer-events: none;
     }
 
     .bulk-actions {
@@ -528,6 +560,7 @@ export class EmployeeList extends LitElement {
     this._itemsPerPage = 10;
     this._sortField = null;
     this._sortDirection = 'asc';
+    this._searchQuery = '';
   }
 
   connectedCallback() {
@@ -620,7 +653,26 @@ export class EmployeeList extends LitElement {
   }
 
   get _totalPages() {
-    return Math.ceil(this._employees.length / this._itemsPerPage);
+    const filtered = this._getFilteredEmployees();
+    return Math.ceil(filtered.length / this._itemsPerPage);
+  }
+
+  _getFilteredEmployees() {
+    if (!this._searchQuery.trim()) {
+      return this._employees;
+    }
+
+    const query = this._searchQuery.toLowerCase().trim();
+    return this._employees.filter((emp) => {
+      return (
+        emp.firstName?.toLowerCase().includes(query) ||
+        emp.lastName?.toLowerCase().includes(query) ||
+        emp.email?.toLowerCase().includes(query) ||
+        emp.phone?.toLowerCase().includes(query) ||
+        emp.department?.toLowerCase().includes(query) ||
+        emp.position?.toLowerCase().includes(query)
+      );
+    });
   }
 
   _sortEmployees(employees) {
@@ -642,10 +694,17 @@ export class EmployeeList extends LitElement {
   }
 
   _getPaginatedEmployees() {
-    const sorted = this._sortEmployees(this._employees);
+    const filtered = this._getFilteredEmployees();
+    const sorted = this._sortEmployees(filtered);
     const start = (this._currentPage - 1) * this._itemsPerPage;
     const end = start + this._itemsPerPage;
     return sorted.slice(start, end);
+  }
+
+  _handleSearch(e) {
+    this._searchQuery = e.target.value;
+    this._currentPage = 1;
+    this._selectedIds = [];
   }
 
   _handleSort(field) {
@@ -948,7 +1007,21 @@ export class EmployeeList extends LitElement {
                   </button>
                 </div>
               `
-            : ''}
+            : html`
+                <div class="search-box">
+                  <input
+                    type="text"
+                    placeholder="${i18n.t('searchPlaceholder')}"
+                    .value=${this._searchQuery}
+                    @input=${this._handleSearch}
+                  />
+                  <iconify-icon
+                    icon="lucide:search"
+                    width="18"
+                    height="18"
+                  ></iconify-icon>
+                </div>
+              `}
         </div>
         <div class="view-controls">
           <button
@@ -968,7 +1041,8 @@ export class EmployeeList extends LitElement {
         </div>
       </div>
 
-      ${this._employees.length === 0
+      ${this._employees.length === 0 ||
+      this._getFilteredEmployees().length === 0
         ? html`<div class="empty">${i18n.t('noEmployeesFound')}</div>`
         : html`
             <div
@@ -980,7 +1054,7 @@ export class EmployeeList extends LitElement {
               .currentPage=${this._currentPage}
               .totalPages=${this._totalPages}
               .itemsPerPage=${this._itemsPerPage}
-              .totalItems=${this._employees.length}
+              .totalItems=${this._getFilteredEmployees().length}
               @page-change=${this._handlePageChange}
               @page-size-change=${this._handlePageSizeChange}
             ></pagination-controls>
