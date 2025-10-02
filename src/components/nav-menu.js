@@ -75,53 +75,57 @@ export class NavMenu extends LitElement {
     }
 
     .btn-add,
-    .btn-seed {
-      padding: var(--spacing-sm) var(--spacing-lg);
-      border: none;
+    .btn-seed,
+    .btn-lang {
+      padding: 6px 12px;
       border-radius: var(--radius-sm);
-      background: var(--color-primary);
-      color: var(--color-surface);
       font-weight: var(--weight-medium);
+      font-size: 0.8125rem;
+      line-height: 1.2;
       cursor: pointer;
       transition: all 0.2s;
-      text-decoration: none;
       display: inline-flex;
       align-items: center;
-      gap: var(--spacing-sm);
+      gap: 4px;
+      box-sizing: border-box;
+      height: 30px;
+    }
+
+    .btn-add {
+      border: 1px solid transparent;
+      background: var(--color-primary);
+      color: var(--color-surface);
+      text-decoration: none;
     }
 
     .btn-add:hover {
-      background: var(--color-primary-hover);
-      transform: translateY(-1px);
+      background: #e55800;
+      color: white;
       box-shadow: 0 4px 8px rgba(255, 98, 0, 0.3);
     }
 
     .btn-add::before {
       content: '+';
-      font-size: var(--font-lg);
+      font-size: 14px;
       font-weight: var(--weight-bold);
+      line-height: 1;
     }
 
     .btn-seed {
+      border: 1px solid transparent;
       background: var(--color-text-light);
-      font-size: var(--font-sm);
+      color: var(--color-surface);
     }
 
     .btn-seed:hover {
       background: var(--color-text);
-      transform: translateY(-1px);
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
     }
 
     .btn-lang {
-      padding: var(--spacing-sm) var(--spacing-md);
       border: 1px solid var(--color-primary);
-      border-radius: var(--radius-sm);
       background: var(--color-surface);
       color: var(--color-primary);
-      font-weight: var(--weight-medium);
-      cursor: pointer;
-      transition: all 0.2s;
       min-width: 48px;
     }
 

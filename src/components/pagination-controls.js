@@ -86,15 +86,23 @@ export class PaginationControls extends LitElement {
       justify-content: center;
     }
 
-    .page-btn:hover:not(:disabled) {
+    .page-btn:hover:not(:disabled):not(.active) {
       border-color: var(--color-primary);
       color: var(--color-primary);
+      background: var(--color-primary-light);
     }
 
     .page-btn.active {
       background: var(--color-primary);
       border-color: var(--color-primary);
-      color: var(--color-surface);
+      color: white;
+    }
+
+    .page-btn.active:hover {
+      background: #e55800;
+      border-color: #e55800;
+      color: white;
+      box-shadow: 0 2px 4px rgba(255, 98, 0, 0.3);
     }
 
     .page-btn:disabled {

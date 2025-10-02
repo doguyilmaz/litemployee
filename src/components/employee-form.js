@@ -120,12 +120,13 @@ export class EmployeeForm extends LitElement {
 
     .btn-primary {
       background: var(--color-primary);
-      color: var(--color-surface);
+      color: white;
       box-shadow: 0 2px 4px rgba(255, 98, 0, 0.2);
     }
 
     .btn-primary:hover {
-      background: var(--color-primary-hover);
+      background: #E55800;
+      color: white;
       box-shadow: 0 4px 8px rgba(255, 98, 0, 0.3);
       transform: translateY(-1px);
     }
