@@ -1,4 +1,5 @@
 import {LitElement, html, css} from 'lit';
+import {Router} from '@vaadin/router';
 import {i18n} from '../i18n/translations.js';
 import {
   employeeStore,
@@ -231,11 +232,9 @@ export class EmployeeForm extends LitElement {
   }
 
   _loadEmployee() {
-    const path = window.location.pathname;
-    const match = path.match(/\/edit\/(.+)/);
-
-    if (match) {
-      this._employeeId = match[1];
+    const location = Router.getLocation();
+    if (location && location.params && location.params.id) {
+      this._employeeId = location.params.id;
       const employee = employeeStore.getById(this._employeeId);
 
       if (employee) {
@@ -276,11 +275,11 @@ export class EmployeeForm extends LitElement {
       employeeStore.add(this._formData);
     }
 
-    window.location.href = '/';
+    Router.go('/');
   }
 
   _handleCancel() {
-    window.location.href = '/';
+    Router.go('/');
   }
 
   render() {

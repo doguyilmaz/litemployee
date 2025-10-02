@@ -1,4 +1,5 @@
 import {LitElement, html, css} from 'lit';
+import {Router} from '@vaadin/router';
 import {i18n} from '../i18n/translations.js';
 import {seedEmployees} from '../utils/seed-data.js';
 
@@ -178,7 +179,9 @@ export class NavMenu extends LitElement {
 
   _handleSeed() {
     seedEmployees(25);
-    window.location.reload();
+    this._employees = [];
+    this.requestUpdate();
+    Router.go('/');
   }
 
   render() {

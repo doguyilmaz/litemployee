@@ -1,7 +1,9 @@
 import {LitElement, html, css} from 'lit';
+import {Router} from '@vaadin/router';
 import {employeeStore} from '../store/employee-store.js';
 import {i18n} from '../i18n/translations.js';
 import {tableIcon, gridIcon} from '../utils/icons.js';
+import {formatDate} from '../utils/date-formatter.js';
 import './confirm-dialog.js';
 import './pagination-controls.js';
 
@@ -337,7 +339,7 @@ export class EmployeeList extends LitElement {
   }
 
   _handleEdit(id) {
-    window.location.href = `/edit/${id}`;
+    Router.go(`/edit/${id}`);
   }
 
   _handleDelete(id) {
@@ -440,8 +442,8 @@ export class EmployeeList extends LitElement {
                 </td>
                 <td>${emp.firstName}</td>
                 <td>${emp.lastName}</td>
-                <td>${emp.dateOfEmployment}</td>
-                <td>${emp.dateOfBirth}</td>
+                <td>${formatDate(emp.dateOfEmployment)}</td>
+                <td>${formatDate(emp.dateOfBirth)}</td>
                 <td>${emp.phone}</td>
                 <td>${emp.email}</td>
                 <td>${emp.department}</td>
@@ -489,19 +491,27 @@ export class EmployeeList extends LitElement {
               </div>
               <div class="grid-item-info">
                 <div class="grid-item-field">
-                  <span class="grid-item-label">Email:</span>
+                  <span class="grid-item-label">${i18n.t('email')}:</span>
                   <span class="grid-item-value">${emp.email}</span>
                 </div>
                 <div class="grid-item-field">
-                  <span class="grid-item-label">Phone:</span>
+                  <span class="grid-item-label">${i18n.t('phone')}:</span>
                   <span class="grid-item-value">${emp.phone}</span>
                 </div>
                 <div class="grid-item-field">
-                  <span class="grid-item-label">Department:</span>
+                  <span class="grid-item-label">${i18n.t('dateOfEmployment')}:</span>
+                  <span class="grid-item-value">${formatDate(emp.dateOfEmployment)}</span>
+                </div>
+                <div class="grid-item-field">
+                  <span class="grid-item-label">${i18n.t('dateOfBirth')}:</span>
+                  <span class="grid-item-value">${formatDate(emp.dateOfBirth)}</span>
+                </div>
+                <div class="grid-item-field">
+                  <span class="grid-item-label">${i18n.t('department')}:</span>
                   <span class="grid-item-value">${emp.department}</span>
                 </div>
                 <div class="grid-item-field">
-                  <span class="grid-item-label">Position:</span>
+                  <span class="grid-item-label">${i18n.t('position')}:</span>
                   <span class="grid-item-value">${emp.position}</span>
                 </div>
               </div>
