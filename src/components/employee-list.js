@@ -214,18 +214,40 @@ export class EmployeeList extends LitElement {
       padding: 12px 16px;
       font-size: 0.875rem;
       white-space: nowrap;
-      overflow: hidden;
+      overflow: visible;
       text-overflow: ellipsis;
+      position: relative;
+    }
+
+    td:not(:last-child) {
+      overflow: hidden;
+    }
+
+    td[title]:hover::after {
+      content: attr(title);
+      position: absolute;
+      left: 0;
+      top: 100%;
+      z-index: 1001;
+      background: rgba(0, 0, 0, 0.9);
+      color: white;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8125rem;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      margin-top: 4px;
+      pointer-events: none;
     }
 
     th:nth-child(2),
     td:nth-child(2) {
-      width: 100px;
+      width: 90px;
     }
 
     th:nth-child(3),
     td:nth-child(3) {
-      width: 100px;
+      width: 90px;
     }
 
     th:nth-child(4),
@@ -245,28 +267,25 @@ export class EmployeeList extends LitElement {
 
     th:nth-child(7),
     td:nth-child(7) {
-      width: 180px;
+      width: 200px;
+      white-space: normal;
     }
 
     th:nth-child(8),
     td:nth-child(8) {
-      width: 140px;
+      width: 100px;
+      white-space: normal;
     }
 
     th:nth-child(9),
     td:nth-child(9) {
-      width: 140px;
+      width: 90px;
+      white-space: normal;
     }
 
     th:nth-child(10),
     td:nth-child(10) {
       width: 100px;
-    }
-
-    td:hover {
-      overflow: visible;
-      white-space: normal;
-      word-break: break-word;
     }
 
     th.sortable {
