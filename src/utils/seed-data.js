@@ -92,9 +92,6 @@ function generateEmploymentDate() {
 }
 
 export function seedEmployees(count = 25) {
-  const departments = Object.keys(DEPARTMENTS);
-  const positions = Object.keys(POSITIONS);
-
   for (let i = 0; i < count; i++) {
     const firstName = getRandomElement(turkishFirstNames);
     const lastName = getRandomElement(turkishLastNames);
@@ -106,8 +103,8 @@ export function seedEmployees(count = 25) {
       phone: generatePhoneNumber(),
       dateOfBirth: generateBirthDate(),
       dateOfEmployment: generateEmploymentDate(),
-      department: getRandomElement(departments),
-      position: getRandomElement(positions),
+      department: getRandomElement(DEPARTMENTS),
+      position: getRandomElement(POSITIONS),
     };
 
     employeeStore.add(employee);

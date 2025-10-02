@@ -66,5 +66,35 @@ class EmployeeStore extends EventTarget {
 }
 
 export const employeeStore = new EmployeeStore();
-export const DEPARTMENTS = ['Analytics', 'Tech'];
-export const POSITIONS = ['Junior', 'Medior', 'Senior'];
+export const DEPARTMENTS = [
+  'Engineering',
+  'Product Management',
+  'Design',
+  'Marketing',
+  'Sales',
+  'Human Resources',
+  'Finance',
+  'Operations',
+  'Customer Support',
+  'Legal',
+];
+export const POSITIONS = [
+  'Software Engineer',
+  'Senior Software Engineer',
+  'Staff Engineer',
+  'Engineering Manager',
+  'Product Manager',
+  'Senior Product Manager',
+  'Product Designer',
+  'UX Researcher',
+  'Marketing Manager',
+  'Sales Representative',
+  'Account Executive',
+  'HR Specialist',
+  'Recruiter',
+  'Financial Analyst',
+  'Operations Manager',
+  'Customer Success Manager',
+  'Support Specialist',
+  'Legal Counsel',
+];
