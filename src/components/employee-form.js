@@ -9,9 +9,9 @@ import {validateEmployee} from '../utils/validators.js';
 
 export class EmployeeForm extends LitElement {
   static properties = {
-    employeeId: {type: String, state: true},
-    formData: {type: Object, state: true},
-    errors: {type: Object, state: true},
+    _employeeId: {type: String, state: true},
+    _formData: {type: Object, state: true},
+    _errors: {type: Object, state: true},
   };
 
   static styles = css`
@@ -196,28 +196,28 @@ export class EmployeeForm extends LitElement {
 
   constructor() {
     super();
-    this.employeeId = null;
-    this.formData = this.getEmptyFormData();
-    this.errors = {};
-    this.boundHandleLangChange = this.handleLanguageChange.bind(this);
+    this._employeeId = null;
+    this._formData = this._getEmptyFormData();
+    this._errors = {};
   }
 
   connectedCallback() {
     super.connectedCallback();
-    window.addEventListener('language-changed', this.boundHandleLangChange);
-    this.loadEmployee();
+    this._boundHandleLangChange = this._handleLanguageChange.bind(this);
+    window.addEventListener('language-changed', this._boundHandleLangChange);
+    this._loadEmployee();
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    window.removeEventListener('language-changed', this.boundHandleLangChange);
+    window.removeEventListener('language-changed', this._boundHandleLangChange);
   }
 
-  handleLanguageChange() {
+  _handleLanguageChange() {
     this.requestUpdate();
   }
 
-  getEmptyFormData() {
+  _getEmptyFormData() {
     return {
       firstName: '',
       lastName: '',
@@ -230,16 +230,16 @@ export class EmployeeForm extends LitElement {
     };
   }
 
-  loadEmployee() {
+  _loadEmployee() {
     const path = window.location.pathname;
     const match = path.match(/\/edit\/(.+)/);
 
     if (match) {
-      this.employeeId = match[1];
-      const employee = employeeStore.getById(this.employeeId);
+      this._employeeId = match[1];
+      const employee = employeeStore.getById(this._employeeId);
 
       if (employee) {
-        this.formData = {
+        this._formData = {
           firstName: employee.firstName || '',
           lastName: employee.lastName || '',
           dateOfEmployment: employee.dateOfEmployment || '',
@@ -254,37 +254,37 @@ export class EmployeeForm extends LitElement {
   }
 
   handleInput(field, value) {
-    this.formData = {...this.formData, [field]: value};
-    if (this.errors[field]) {
-      this.errors = {...this.errors, [field]: undefined};
+    this._formData = {...this._formData, [field]: value};
+    if (this._errors[field]) {
+      this._errors = {...this._errors, [field]: undefined};
     }
   }
 
   handleSubmit(e) {
     e.preventDefault();
 
-    const validation = validateEmployee(this.formData, this.employeeId);
+    const validation = validateEmployee(this._formData, this._employeeId);
 
     if (!validation.isValid) {
-      this.errors = validation.errors;
+      this._errors = validation.errors;
       return;
     }
 
-    if (this.employeeId) {
-      employeeStore.update(this.employeeId, this.formData);
+    if (this._employeeId) {
+      employeeStore.update(this._employeeId, this._formData);
     } else {
-      employeeStore.add(this.formData);
+      employeeStore.add(this._formData);
     }
 
     window.location.href = '/';
   }
 
-  handleCancel() {
+  _handleCancel() {
     window.location.href = '/';
   }
 
   render() {
-    const isEdit = !!this.employeeId;
+    const isEdit = !!this._employeeId;
     const title = isEdit ? i18n.t('editEmployee') : i18n.t('addEmployee');
 
     return html`
@@ -297,13 +297,13 @@ export class EmployeeForm extends LitElement {
             </label>
             <input
               type="text"
-              .value=${this.formData.firstName}
+              .value=${this._formData.firstName}
               @input=${(e) => this.handleInput('firstName', e.target.value)}
-              class=${this.errors.firstName ? 'error' : ''}
+              class=${this._errors.firstName ? 'error' : ''}
             />
-            ${this.errors.firstName
+            ${this._errors.firstName
               ? html`<span class="error-message"
-                  >${this.errors.firstName}</span
+                  >${this._errors.firstName}</span
                 >`
               : ''}
           </div>
@@ -314,12 +314,14 @@ export class EmployeeForm extends LitElement {
             </label>
             <input
               type="text"
-              .value=${this.formData.lastName}
+              .value=${this._formData.lastName}
               @input=${(e) => this.handleInput('lastName', e.target.value)}
-              class=${this.errors.lastName ? 'error' : ''}
+              class=${this._errors.lastName ? 'error' : ''}
             />
-            ${this.errors.lastName
-              ? html`<span class="error-message">${this.errors.lastName}</span>`
+            ${this._errors.lastName
+              ? html`<span class="error-message"
+                  >${this._errors.lastName}</span
+                >`
               : ''}
           </div>
         </div>
@@ -331,14 +333,14 @@ export class EmployeeForm extends LitElement {
             </label>
             <input
               type="date"
-              .value=${this.formData.dateOfEmployment}
+              .value=${this._formData.dateOfEmployment}
               @input=${(e) =>
                 this.handleInput('dateOfEmployment', e.target.value)}
-              class=${this.errors.dateOfEmployment ? 'error' : ''}
+              class=${this._errors.dateOfEmployment ? 'error' : ''}
             />
-            ${this.errors.dateOfEmployment
+            ${this._errors.dateOfEmployment
               ? html`<span class="error-message"
-                  >${this.errors.dateOfEmployment}</span
+                  >${this._errors.dateOfEmployment}</span
                 >`
               : ''}
           </div>
@@ -349,13 +351,13 @@ export class EmployeeForm extends LitElement {
             </label>
             <input
               type="date"
-              .value=${this.formData.dateOfBirth}
+              .value=${this._formData.dateOfBirth}
               @input=${(e) => this.handleInput('dateOfBirth', e.target.value)}
-              class=${this.errors.dateOfBirth ? 'error' : ''}
+              class=${this._errors.dateOfBirth ? 'error' : ''}
             />
-            ${this.errors.dateOfBirth
+            ${this._errors.dateOfBirth
               ? html`<span class="error-message"
-                  >${this.errors.dateOfBirth}</span
+                  >${this._errors.dateOfBirth}</span
                 >`
               : ''}
           </div>
@@ -366,12 +368,12 @@ export class EmployeeForm extends LitElement {
             <label> ${i18n.t('phone')} <span class="required">*</span> </label>
             <input
               type="tel"
-              .value=${this.formData.phone}
+              .value=${this._formData.phone}
               @input=${(e) => this.handleInput('phone', e.target.value)}
-              class=${this.errors.phone ? 'error' : ''}
+              class=${this._errors.phone ? 'error' : ''}
             />
-            ${this.errors.phone
-              ? html`<span class="error-message">${this.errors.phone}</span>`
+            ${this._errors.phone
+              ? html`<span class="error-message">${this._errors.phone}</span>`
               : ''}
           </div>
 
@@ -379,12 +381,12 @@ export class EmployeeForm extends LitElement {
             <label> ${i18n.t('email')} <span class="required">*</span> </label>
             <input
               type="email"
-              .value=${this.formData.email}
+              .value=${this._formData.email}
               @input=${(e) => this.handleInput('email', e.target.value)}
-              class=${this.errors.email ? 'error' : ''}
+              class=${this._errors.email ? 'error' : ''}
             />
-            ${this.errors.email
-              ? html`<span class="error-message">${this.errors.email}</span>`
+            ${this._errors.email
+              ? html`<span class="error-message">${this._errors.email}</span>`
               : ''}
           </div>
         </div>
@@ -395,18 +397,18 @@ export class EmployeeForm extends LitElement {
               ${i18n.t('department')} <span class="required">*</span>
             </label>
             <select
-              .value=${this.formData.department}
+              .value=${this._formData.department}
               @change=${(e) => this.handleInput('department', e.target.value)}
-              class=${this.errors.department ? 'error' : ''}
+              class=${this._errors.department ? 'error' : ''}
             >
               <option value="">${i18n.t('selectDepartment')}</option>
               ${DEPARTMENTS.map(
                 (dept) => html`<option value=${dept}>${dept}</option>`
               )}
             </select>
-            ${this.errors.department
+            ${this._errors.department
               ? html`<span class="error-message"
-                  >${this.errors.department}</span
+                  >${this._errors.department}</span
                 >`
               : ''}
           </div>
@@ -416,17 +418,19 @@ export class EmployeeForm extends LitElement {
               ${i18n.t('position')} <span class="required">*</span>
             </label>
             <select
-              .value=${this.formData.position}
+              .value=${this._formData.position}
               @change=${(e) => this.handleInput('position', e.target.value)}
-              class=${this.errors.position ? 'error' : ''}
+              class=${this._errors.position ? 'error' : ''}
             >
               <option value="">${i18n.t('selectPosition')}</option>
               ${POSITIONS.map(
                 (pos) => html`<option value=${pos}>${pos}</option>`
               )}
             </select>
-            ${this.errors.position
-              ? html`<span class="error-message">${this.errors.position}</span>`
+            ${this._errors.position
+              ? html`<span class="error-message"
+                  >${this._errors.position}</span
+                >`
               : ''}
           </div>
         </div>
@@ -438,7 +442,7 @@ export class EmployeeForm extends LitElement {
           <button
             type="button"
             class="btn btn-secondary"
-            @click=${this.handleCancel}
+            @click=${this._handleCancel}
           >
             ${i18n.t('cancel')}
           </button>

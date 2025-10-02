@@ -1,13 +1,25 @@
-import {LitElement, html, css} from 'lit';
+import {LitElement, html, css, svg} from 'lit';
 import {employeeStore} from '../store/employee-store.js';
 import {i18n} from '../i18n/translations.js';
 import './confirm-dialog.js';
 
+const tableIcon = svg`
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="8" x2="21" y1="6" y2="6"/><line x1="8" x2="21" y1="12" y2="12"/><line x1="8" x2="21" y1="18" y2="18"/><line x1="3" x2="3.01" y1="6" y2="6"/><line x1="3" x2="3.01" y1="12" y2="12"/><line x1="3" x2="3.01" y1="18" y2="18"/>
+  </svg>
+`;
+
+const gridIcon = svg`
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>
+  </svg>
+`;
+
 export class EmployeeList extends LitElement {
   static properties = {
-    employees: {type: Array, state: true},
-    viewMode: {type: String, state: true},
-    selectedIds: {type: Set, state: true},
+    _employees: {type: Array, state: true},
+    _viewMode: {type: String, state: true},
+    _selectedIds: {type: Array, state: true},
   };
 
   static styles = css`
@@ -38,8 +50,8 @@ export class EmployeeList extends LitElement {
     }
 
     .view-btn {
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
       padding: 0;
       border: 1.5px solid var(--color-border);
       border-radius: var(--radius-md);
@@ -50,7 +62,13 @@ export class EmployeeList extends LitElement {
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.25rem;
+      position: relative;
+    }
+
+    .view-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
     }
 
     .view-btn:hover {
@@ -282,50 +300,53 @@ export class EmployeeList extends LitElement {
 
   constructor() {
     super();
-    this.employees = [];
-    this.viewMode = 'table';
-    this.selectedIds = new Set();
-    this.loadEmployees();
-    this.boundHandleChange = this.handleEmployeesChange.bind(this);
-    this.boundHandleLangChange = this.handleLanguageChange.bind(this);
+    this._employees = [];
+    this._viewMode = 'table';
+    this._selectedIds = [];
   }
 
   connectedCallback() {
     super.connectedCallback();
-    employeeStore.addEventListener('employees-changed', this.boundHandleChange);
-    window.addEventListener('language-changed', this.boundHandleLangChange);
+    this._loadEmployees();
+    this._boundHandleChange = this._handleEmployeesChange.bind(this);
+    this._boundHandleLangChange = this._handleLanguageChange.bind(this);
+    employeeStore.addEventListener(
+      'employees-changed',
+      this._boundHandleChange
+    );
+    window.addEventListener('language-changed', this._boundHandleLangChange);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     employeeStore.removeEventListener(
       'employees-changed',
-      this.boundHandleChange
+      this._boundHandleChange
     );
-    window.removeEventListener('language-changed', this.boundHandleLangChange);
+    window.removeEventListener('language-changed', this._boundHandleLangChange);
   }
 
-  handleLanguageChange() {
+  _handleLanguageChange() {
     this.requestUpdate();
   }
 
-  loadEmployees() {
-    this.employees = employeeStore.getAll();
+  _loadEmployees() {
+    this._employees = employeeStore.getAll();
   }
 
-  handleEmployeesChange() {
-    this.loadEmployees();
+  _handleEmployeesChange() {
+    this._loadEmployees();
   }
 
-  setViewMode(mode) {
-    this.viewMode = mode;
+  _setViewMode(mode) {
+    this._viewMode = mode;
   }
 
-  handleEdit(id) {
+  _handleEdit(id) {
     window.location.href = `/edit/${id}`;
   }
 
-  handleDelete(id) {
+  _handleDelete(id) {
     const dialog = this.shadowRoot.querySelector('confirm-dialog');
     dialog.open({
       onConfirm: () => {
@@ -334,28 +355,29 @@ export class EmployeeList extends LitElement {
     });
   }
 
-  toggleSelectAll(e) {
+  _toggleSelectAll(e) {
     if (e.target.checked) {
-      this.selectedIds = new Set(this.employees.map((emp) => emp.id));
+      this._selectedIds = this._employees.map((emp) => emp.id);
     } else {
-      this.selectedIds = new Set();
+      this._selectedIds = [];
     }
   }
 
-  toggleSelect(id, e) {
-    const newSelected = new Set(this.selectedIds);
+  _toggleSelect(id, e) {
+    const newSelected = [...this._selectedIds];
     if (e.target.checked) {
-      newSelected.add(id);
+      if (!newSelected.includes(id)) {
+        this._selectedIds = [...newSelected, id];
+      }
     } else {
-      newSelected.delete(id);
+      this._selectedIds = newSelected.filter((selectedId) => selectedId !== id);
     }
-    this.selectedIds = newSelected;
   }
 
-  get isAllSelected() {
+  get _isAllSelected() {
     return (
-      this.employees.length > 0 &&
-      this.employees.every((emp) => this.selectedIds.has(emp.id))
+      this._employees.length > 0 &&
+      this._employees.every((emp) => this._selectedIds.includes(emp.id))
     );
   }
 
@@ -367,8 +389,8 @@ export class EmployeeList extends LitElement {
             <th class="checkbox-col">
               <input
                 type="checkbox"
-                .checked=${this.isAllSelected}
-                @change=${this.toggleSelectAll}
+                .checked=${this._isAllSelected}
+                @change=${this._toggleSelectAll}
               />
             </th>
             <th>First Name</th>
@@ -380,14 +402,14 @@ export class EmployeeList extends LitElement {
           </tr>
         </thead>
         <tbody>
-          ${this.employees.map(
+          ${this._employees.map(
             (emp) => html`
               <tr>
                 <td class="checkbox-col">
                   <input
                     type="checkbox"
-                    .checked=${this.selectedIds.has(emp.id)}
-                    @change=${(e) => this.toggleSelect(emp.id, e)}
+                    .checked=${this._selectedIds.includes(emp.id)}
+                    @change=${(e) => this._toggleSelect(emp.id, e)}
                   />
                 </td>
                 <td>${emp.firstName}</td>
@@ -399,13 +421,13 @@ export class EmployeeList extends LitElement {
                   <div class="actions">
                     <button
                       class="btn btn-edit"
-                      @click=${() => this.handleEdit(emp.id)}
+                      @click=${() => this._handleEdit(emp.id)}
                     >
                       ${i18n.t('edit')}
                     </button>
                     <button
                       class="btn btn-delete"
-                      @click=${() => this.handleDelete(emp.id)}
+                      @click=${() => this._handleDelete(emp.id)}
                     >
                       ${i18n.t('delete')}
                     </button>
@@ -422,15 +444,15 @@ export class EmployeeList extends LitElement {
   renderGridView() {
     return html`
       <div class="grid-view">
-        ${this.employees.map(
+        ${this._employees.map(
           (emp) => html`
             <div class="grid-item">
               <div class="grid-item-header">
                 <input
                   type="checkbox"
                   class="grid-item-checkbox"
-                  .checked=${this.selectedIds.has(emp.id)}
-                  @change=${(e) => this.toggleSelect(emp.id, e)}
+                  .checked=${this._selectedIds.includes(emp.id)}
+                  @change=${(e) => this._toggleSelect(emp.id, e)}
                 />
                 <span>${emp.firstName} ${emp.lastName}</span>
               </div>
@@ -455,13 +477,13 @@ export class EmployeeList extends LitElement {
               <div class="actions">
                 <button
                   class="btn btn-edit"
-                  @click=${() => this.handleEdit(emp.id)}
+                  @click=${() => this._handleEdit(emp.id)}
                 >
                   ${i18n.t('edit')}
                 </button>
                 <button
                   class="btn btn-delete"
-                  @click=${() => this.handleDelete(emp.id)}
+                  @click=${() => this._handleDelete(emp.id)}
                 >
                   ${i18n.t('delete')}
                 </button>
@@ -479,25 +501,25 @@ export class EmployeeList extends LitElement {
         <h1>${i18n.t('employeeList')}</h1>
         <div class="view-controls">
           <button
-            class="view-btn ${this.viewMode === 'table' ? 'active' : ''}"
-            @click=${() => this.setViewMode('table')}
+            class="view-btn ${this._viewMode === 'table' ? 'active' : ''}"
+            @click=${() => this._setViewMode('table')}
             title="Table View"
           >
-            ☰
+            ${tableIcon}
           </button>
           <button
-            class="view-btn ${this.viewMode === 'grid' ? 'active' : ''}"
-            @click=${() => this.setViewMode('grid')}
+            class="view-btn ${this._viewMode === 'grid' ? 'active' : ''}"
+            @click=${() => this._setViewMode('grid')}
             title="Grid View"
           >
-            ▦
+            ${gridIcon}
           </button>
         </div>
       </div>
 
-      ${this.employees.length === 0
+      ${this._employees.length === 0
         ? html`<div class="empty">No employees found</div>`
-        : this.viewMode === 'table'
+        : this._viewMode === 'table'
         ? this.renderTableView()
         : this.renderGridView()}
 

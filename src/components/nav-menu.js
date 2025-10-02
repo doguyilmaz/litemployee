@@ -3,7 +3,7 @@ import {i18n} from '../i18n/translations.js';
 
 export class NavMenu extends LitElement {
   static properties = {
-    lang: {type: String, state: true},
+    _lang: {type: String, state: true},
   };
 
   static styles = css`
@@ -142,30 +142,30 @@ export class NavMenu extends LitElement {
 
   constructor() {
     super();
-    this.lang = i18n.getCurrentLanguage();
-    this.boundHandleLangChange = this.handleLanguageChange.bind(this);
+    this._lang = i18n.getCurrentLanguage();
   }
 
   connectedCallback() {
     super.connectedCallback();
-    window.addEventListener('language-changed', this.boundHandleLangChange);
+    this._boundHandleLangChange = this._handleLanguageChange.bind(this);
+    window.addEventListener('language-changed', this._boundHandleLangChange);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    window.removeEventListener('language-changed', this.boundHandleLangChange);
+    window.removeEventListener('language-changed', this._boundHandleLangChange);
   }
 
-  handleLanguageChange(e) {
-    this.lang = e.detail.lang;
+  _handleLanguageChange(e) {
+    this._lang = e.detail.lang;
   }
 
-  toggleLanguage() {
-    this.lang = i18n.toggle();
+  _toggleLanguage() {
+    this._lang = i18n.toggle();
   }
 
   render() {
-    const buttonText = this.lang === 'en' ? 'TR' : 'EN';
+    const buttonText = this._lang === 'en' ? 'TR' : 'EN';
 
     return html`
       <nav>
@@ -179,7 +179,7 @@ export class NavMenu extends LitElement {
         <span class="spacer"></span>
         <div class="nav-actions">
           <a href="/add" class="btn-add">${i18n.t('addNew')}</a>
-          <button class="btn-lang" @click=${this.toggleLanguage}>
+          <button class="btn-lang" @click=${this._toggleLanguage}>
             ${buttonText}
           </button>
         </div>

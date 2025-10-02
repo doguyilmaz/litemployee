@@ -3,13 +3,13 @@ import {i18n} from '../i18n/translations.js';
 
 export class ConfirmDialog extends LitElement {
   static properties = {
-    isOpen: {type: Boolean, state: true},
-    title: {type: String},
-    message: {type: String},
-    confirmText: {type: String},
-    cancelText: {type: String},
-    onConfirm: {type: Function},
-    onCancel: {type: Function},
+    _isOpen: {type: Boolean, state: true},
+    _title: {type: String, state: true},
+    _message: {type: String, state: true},
+    _confirmText: {type: String, state: true},
+    _cancelText: {type: String, state: true},
+    _onConfirm: {type: Function, state: true},
+    _onCancel: {type: Function, state: true},
   };
 
   static styles = css`
@@ -149,67 +149,67 @@ export class ConfirmDialog extends LitElement {
 
   constructor() {
     super();
-    this.isOpen = false;
-    this.title = '';
-    this.message = '';
-    this.confirmText = '';
-    this.cancelText = '';
-    this.onConfirm = null;
-    this.onCancel = null;
+    this._isOpen = false;
+    this._title = '';
+    this._message = '';
+    this._confirmText = '';
+    this._cancelText = '';
+    this._onConfirm = null;
+    this._onCancel = null;
   }
 
   open({title, message, confirmText, cancelText, onConfirm, onCancel}) {
-    this.title = title || i18n.t('confirmDelete');
-    this.message = message || i18n.t('confirmDeleteMessage');
-    this.confirmText = confirmText || i18n.t('delete');
-    this.cancelText = cancelText || i18n.t('cancel');
-    this.onConfirm = onConfirm;
-    this.onCancel = onCancel;
-    this.isOpen = true;
+    this._title = title || i18n.t('confirmDelete');
+    this._message = message || i18n.t('confirmDeleteMessage');
+    this._confirmText = confirmText || i18n.t('delete');
+    this._cancelText = cancelText || i18n.t('cancel');
+    this._onConfirm = onConfirm;
+    this._onCancel = onCancel;
+    this._isOpen = true;
     this.setAttribute('open', '');
   }
 
   close() {
-    this.isOpen = false;
+    this._isOpen = false;
     this.removeAttribute('open');
   }
 
-  handleConfirm() {
-    if (this.onConfirm) {
-      this.onConfirm();
+  _handleConfirm() {
+    if (this._onConfirm) {
+      this._onConfirm();
     }
     this.close();
   }
 
-  handleCancel() {
-    if (this.onCancel) {
-      this.onCancel();
+  _handleCancel() {
+    if (this._onCancel) {
+      this._onCancel();
     }
     this.close();
   }
 
-  handleOverlayClick(e) {
+  _handleOverlayClick(e) {
     if (e.target.classList.contains('overlay')) {
-      this.handleCancel();
+      this._handleCancel();
     }
   }
 
   render() {
-    if (!this.isOpen) return html``;
+    if (!this._isOpen) return html``;
 
     return html`
-      <div class="overlay" @click=${this.handleOverlayClick}></div>
+      <div class="overlay" @click=${this._handleOverlayClick}></div>
       <div class="dialog">
         <div class="dialog-header">
-          <h2 class="dialog-title">${this.title}</h2>
+          <h2 class="dialog-title">${this._title}</h2>
         </div>
-        <div class="dialog-message">${this.message}</div>
+        <div class="dialog-message">${this._message}</div>
         <div class="dialog-actions">
-          <button class="btn btn-cancel" @click=${this.handleCancel}>
-            ${this.cancelText}
+          <button class="btn btn-cancel" @click=${this._handleCancel}>
+            ${this._cancelText}
           </button>
-          <button class="btn btn-confirm" @click=${this.handleConfirm}>
-            ${this.confirmText}
+          <button class="btn btn-confirm" @click=${this._handleConfirm}>
+            ${this._confirmText}
           </button>
         </div>
       </div>
