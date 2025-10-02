@@ -7,6 +7,7 @@ import './confirm-dialog.js';
 export class NavMenu extends LitElement {
   static properties = {
     _lang: {type: String, state: true},
+    _currentPath: {type: String, state: true},
   };
 
   static styles = css`
@@ -21,7 +22,7 @@ export class NavMenu extends LitElement {
       align-items: center;
       gap: var(--spacing-lg);
       padding: var(--spacing-md) var(--spacing-xl);
-      max-width: 1200px;
+      max-width: 1400px;
       margin: 0 auto;
     }
 
@@ -54,15 +55,23 @@ export class NavMenu extends LitElement {
       gap: var(--spacing-lg);
     }
 
-    a {
+    .nav-links a {
       color: var(--color-text);
       text-decoration: none;
       font-weight: var(--weight-medium);
       transition: color 0.2s;
+      padding: var(--spacing-xs) var(--spacing-sm);
+      border-radius: var(--radius-sm);
     }
 
-    a:hover {
+    .nav-links a:hover {
       color: var(--color-primary);
+      background: var(--color-primary-light);
+    }
+
+    .nav-links a.active {
+      color: var(--color-primary);
+      font-weight: var(--weight-semibold);
     }
 
     .spacer {
@@ -177,21 +186,35 @@ export class NavMenu extends LitElement {
   constructor() {
     super();
     this._lang = i18n.getCurrentLanguage();
+    this._currentPath = window.location.pathname;
   }
 
   connectedCallback() {
     super.connectedCallback();
     this._boundHandleLangChange = this._handleLanguageChange.bind(this);
+    this._boundHandleNavigation = this._handleNavigation.bind(this);
     window.addEventListener('language-changed', this._boundHandleLangChange);
+    window.addEventListener(
+      'vaadin-router-location-changed',
+      this._boundHandleNavigation
+    );
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     window.removeEventListener('language-changed', this._boundHandleLangChange);
+    window.removeEventListener(
+      'vaadin-router-location-changed',
+      this._boundHandleNavigation
+    );
   }
 
   _handleLanguageChange(e) {
     this._lang = e.detail.lang;
+  }
+
+  _handleNavigation(e) {
+    this._currentPath = e.detail.location.pathname;
   }
 
   _toggleLanguage() {
@@ -227,7 +250,9 @@ export class NavMenu extends LitElement {
           <span>Employee Management</span>
         </a>
         <div class="nav-links">
-          <a href="/">${i18n.t('employeeList')}</a>
+          <a href="/" class="${this._currentPath === '/' ? 'active' : ''}"
+            >${i18n.t('employeeList')}</a
+          >
         </div>
         <span class="spacer"></span>
         <div class="nav-actions">

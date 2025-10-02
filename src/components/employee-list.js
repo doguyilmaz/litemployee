@@ -2,7 +2,7 @@ import {LitElement, html, css} from 'lit';
 import {Router} from '@vaadin/router';
 import {employeeStore} from '../store/employee-store.js';
 import {i18n} from '../i18n/translations.js';
-import {tableIcon, gridIcon} from '../utils/icons.js';
+import {tableIcon, gridIcon, editIcon, deleteIcon} from '../utils/icons.js';
 import {formatDate} from '../utils/date-formatter.js';
 import './confirm-dialog.js';
 import './pagination-controls.js';
@@ -248,27 +248,34 @@ export class EmployeeList extends LitElement {
     .grid-view {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
+      gap: 1.25rem;
     }
 
     .grid-item {
       background: var(--color-surface);
-      padding: 1.5rem;
       border-radius: var(--radius-lg);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
       border: 1px solid var(--color-border-light);
       display: flex;
       flex-direction: column;
+      transition: all 0.2s;
+      overflow: hidden;
+    }
+
+    .grid-item:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
     .grid-item-header {
+      background: var(--color-primary-light);
+      padding: 0.875rem 1rem;
       font-weight: var(--weight-semibold);
-      font-size: var(--font-lg);
-      margin-bottom: var(--spacing-md);
+      font-size: 0.9375rem;
       color: var(--color-primary);
       display: flex;
       align-items: center;
       gap: var(--spacing-sm);
+      border-bottom: 1px solid var(--color-primary);
     }
 
     .grid-item-checkbox {
@@ -280,62 +287,117 @@ export class EmployeeList extends LitElement {
 
     .grid-item-info {
       flex: 1;
-      margin-bottom: var(--spacing-md);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.625rem;
+    }
+
+    .grid-item-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
     }
 
     .grid-item-field {
-      color: var(--color-text);
-      margin: var(--spacing-sm) 0;
-      font-size: var(--font-sm);
       display: flex;
-      gap: var(--spacing-xs);
+      flex-direction: column;
+      gap: 0.125rem;
+      min-width: 0;
     }
 
     .grid-item-label {
-      font-weight: var(--weight-semibold);
+      font-size: 0.6875rem;
+      font-weight: var(--weight-medium);
       color: var(--color-text-light);
-      min-width: 80px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
     }
 
     .grid-item-value {
+      font-size: 0.8125rem;
       color: var(--color-text);
+      font-weight: var(--weight-normal);
+      word-break: break-word;
+      overflow-wrap: break-word;
+      line-height: 1.4;
     }
 
-    .actions {
+    .grid-item .actions {
+      padding: 0.75rem 1rem;
       display: flex;
       gap: 0.5rem;
+      background: var(--color-background);
+      border-top: 1px solid var(--color-border-light);
     }
 
     .btn {
-      padding: var(--spacing-sm) var(--spacing-md);
-      border: 1px solid;
+      flex: 1;
+      padding: 0.5rem;
+      border: none;
       border-radius: var(--radius-sm);
-      font-size: var(--font-sm);
-      font-weight: var(--weight-medium);
       cursor: pointer;
       transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
     }
 
     .btn-edit {
-      border-color: var(--color-primary);
-      background: var(--color-surface);
-      color: var(--color-primary);
+      background: var(--color-primary);
+      color: white;
     }
 
     .btn-edit:hover {
-      background: var(--color-primary);
-      color: var(--color-surface);
+      background: #e55800;
+      box-shadow: 0 2px 4px rgba(255, 98, 0, 0.3);
+    }
+
+    .btn-edit:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-bottom: 4px;
+      padding: 4px 8px;
+      background: rgba(0, 0, 0, 0.85);
+      color: white;
+      font-size: 0.75rem;
+      border-radius: var(--radius-sm);
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 1000;
     }
 
     .btn-delete {
-      border-color: var(--color-danger);
       background: var(--color-surface);
       color: var(--color-danger);
+      border: 1px solid var(--color-danger);
     }
 
     .btn-delete:hover {
       background: var(--color-danger);
-      color: var(--color-surface);
+      color: white;
+      border-color: var(--color-danger);
+    }
+
+    .btn-delete:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-bottom: 4px;
+      padding: 4px 8px;
+      background: rgba(0, 0, 0, 0.85);
+      color: white;
+      font-size: 0.75rem;
+      border-radius: var(--radius-sm);
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 1000;
     }
 
     .empty {
@@ -672,15 +734,17 @@ export class EmployeeList extends LitElement {
                     <div class="actions">
                       <button
                         class="btn btn-edit"
+                        data-tooltip="${i18n.t('edit')}"
                         @click=${() => this._handleEdit(emp.id)}
                       >
-                        ${i18n.t('edit')}
+                        ${editIcon}
                       </button>
                       <button
                         class="btn btn-delete"
+                        data-tooltip="${i18n.t('delete')}"
                         @click=${() => this._handleDelete(emp.id)}
                       >
-                        ${i18n.t('delete')}
+                        ${deleteIcon}
                       </button>
                     </div>
                   </td>
@@ -712,34 +776,40 @@ export class EmployeeList extends LitElement {
               </div>
               <div class="grid-item-info">
                 <div class="grid-item-field">
-                  <span class="grid-item-label">${i18n.t('email')}:</span>
+                  <span class="grid-item-label">${i18n.t('email')}</span>
                   <span class="grid-item-value">${emp.email}</span>
                 </div>
                 <div class="grid-item-field">
-                  <span class="grid-item-label">${i18n.t('phone')}:</span>
+                  <span class="grid-item-label">${i18n.t('phone')}</span>
                   <span class="grid-item-value">${emp.phone}</span>
                 </div>
-                <div class="grid-item-field">
-                  <span class="grid-item-label"
-                    >${i18n.t('dateOfEmployment')}:</span
-                  >
-                  <span class="grid-item-value"
-                    >${formatDate(emp.dateOfEmployment)}</span
-                  >
+                <div class="grid-item-row">
+                  <div class="grid-item-field">
+                    <span class="grid-item-label"
+                      >${i18n.t('dateOfEmployment')}</span
+                    >
+                    <span class="grid-item-value"
+                      >${formatDate(emp.dateOfEmployment)}</span
+                    >
+                  </div>
+                  <div class="grid-item-field">
+                    <span class="grid-item-label"
+                      >${i18n.t('dateOfBirth')}</span
+                    >
+                    <span class="grid-item-value"
+                      >${formatDate(emp.dateOfBirth)}</span
+                    >
+                  </div>
                 </div>
-                <div class="grid-item-field">
-                  <span class="grid-item-label">${i18n.t('dateOfBirth')}:</span>
-                  <span class="grid-item-value"
-                    >${formatDate(emp.dateOfBirth)}</span
-                  >
-                </div>
-                <div class="grid-item-field">
-                  <span class="grid-item-label">${i18n.t('department')}:</span>
-                  <span class="grid-item-value">${emp.department}</span>
-                </div>
-                <div class="grid-item-field">
-                  <span class="grid-item-label">${i18n.t('position')}:</span>
-                  <span class="grid-item-value">${emp.position}</span>
+                <div class="grid-item-row">
+                  <div class="grid-item-field">
+                    <span class="grid-item-label">${i18n.t('department')}</span>
+                    <span class="grid-item-value">${emp.department}</span>
+                  </div>
+                  <div class="grid-item-field">
+                    <span class="grid-item-label">${i18n.t('position')}</span>
+                    <span class="grid-item-value">${emp.position}</span>
+                  </div>
                 </div>
               </div>
               <div class="actions">
