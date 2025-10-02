@@ -32,6 +32,7 @@ const translations = {
     clearData: 'Clear Data',
     confirmClearData:
       'Are you sure you want to clear all employee data? This action cannot be undone.',
+    noEmployeesFound: 'No employees found',
   },
   tr: {
     employeeList: 'Çalışanlar',
@@ -66,6 +67,7 @@ const translations = {
     clearData: 'Verileri Temizle',
     confirmClearData:
       'Tüm çalışan verilerini temizlemek istediğinizden emin misiniz? Bu işlem geri alınamaz.',
+    noEmployeesFound: 'Çalışan bulunamadı',
   },
 };
 

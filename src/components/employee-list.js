@@ -914,7 +914,7 @@ export class EmployeeList extends LitElement {
       </div>
 
       ${this._employees.length === 0
-        ? html`<div class="empty">No employees found</div>`
+        ? html`<div class="empty">${i18n.t('noEmployeesFound')}</div>`
         : html`
             <div
               class="${this._viewMode === 'table' ? 'show-table' : 'show-grid'}"
