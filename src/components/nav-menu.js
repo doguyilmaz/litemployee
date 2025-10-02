@@ -1,5 +1,6 @@
 import {LitElement, html, css} from 'lit';
 import {i18n} from '../i18n/translations.js';
+import {seedEmployees} from '../utils/seed-data.js';
 
 export class NavMenu extends LitElement {
   static properties = {
@@ -72,7 +73,8 @@ export class NavMenu extends LitElement {
       gap: var(--spacing-md);
     }
 
-    .btn-add {
+    .btn-add,
+    .btn-seed {
       padding: var(--spacing-sm) var(--spacing-lg);
       border: none;
       border-radius: var(--radius-sm);
@@ -87,7 +89,8 @@ export class NavMenu extends LitElement {
       gap: var(--spacing-sm);
     }
 
-    .btn-add:hover {
+    .btn-add:hover,
+    .btn-seed:hover {
       background: var(--color-primary-hover);
     }
 
@@ -95,6 +98,15 @@ export class NavMenu extends LitElement {
       content: '+';
       font-size: var(--font-lg);
       font-weight: var(--weight-bold);
+    }
+
+    .btn-seed {
+      background: var(--color-text-light);
+      font-size: var(--font-sm);
+    }
+
+    .btn-seed:hover {
+      background: var(--color-text);
     }
 
     .btn-lang {
@@ -164,6 +176,11 @@ export class NavMenu extends LitElement {
     this._lang = i18n.toggle();
   }
 
+  _handleSeed() {
+    seedEmployees(25);
+    window.location.reload();
+  }
+
   render() {
     const buttonText = this._lang === 'en' ? 'TR' : 'EN';
 
@@ -178,6 +195,7 @@ export class NavMenu extends LitElement {
         </div>
         <span class="spacer"></span>
         <div class="nav-actions">
+          <button class="btn-seed" @click=${this._handleSeed}>Seed 25</button>
           <a href="/add" class="btn-add">${i18n.t('addNew')}</a>
           <button class="btn-lang" @click=${this._toggleLanguage}>
             ${buttonText}

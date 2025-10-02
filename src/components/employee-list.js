@@ -3,12 +3,15 @@ import {employeeStore} from '../store/employee-store.js';
 import {i18n} from '../i18n/translations.js';
 import {tableIcon, gridIcon} from '../utils/icons.js';
 import './confirm-dialog.js';
+import './pagination-controls.js';
 
 export class EmployeeList extends LitElement {
   static properties = {
     _employees: {type: Array, state: true},
     _viewMode: {type: String, state: true},
     _selectedIds: {type: Array, state: true},
+    _currentPage: {type: Number, state: true},
+    _itemsPerPage: {type: Number, state: true},
   };
 
   static styles = css`
@@ -292,6 +295,8 @@ export class EmployeeList extends LitElement {
     this._employees = [];
     this._viewMode = 'table';
     this._selectedIds = [];
+    this._currentPage = 1;
+    this._itemsPerPage = 10;
   }
 
   connectedCallback() {
@@ -345,10 +350,21 @@ export class EmployeeList extends LitElement {
   }
 
   _toggleSelectAll(e) {
+    const paginatedEmployees = this._getPaginatedEmployees();
     if (e.target.checked) {
-      this._selectedIds = this._employees.map((emp) => emp.id);
+      const paginatedIds = paginatedEmployees.map((emp) => emp.id);
+      const newSelected = [...this._selectedIds];
+      paginatedIds.forEach((id) => {
+        if (!newSelected.includes(id)) {
+          newSelected.push(id);
+        }
+      });
+      this._selectedIds = newSelected;
     } else {
-      this._selectedIds = [];
+      const paginatedIds = paginatedEmployees.map((emp) => emp.id);
+      this._selectedIds = this._selectedIds.filter(
+        (id) => !paginatedIds.includes(id)
+      );
     }
   }
 
@@ -364,13 +380,31 @@ export class EmployeeList extends LitElement {
   }
 
   get _isAllSelected() {
+    const paginatedEmployees = this._getPaginatedEmployees();
     return (
-      this._employees.length > 0 &&
-      this._employees.every((emp) => this._selectedIds.includes(emp.id))
+      paginatedEmployees.length > 0 &&
+      paginatedEmployees.every((emp) => this._selectedIds.includes(emp.id))
     );
   }
 
+  get _totalPages() {
+    return Math.ceil(this._employees.length / this._itemsPerPage);
+  }
+
+  _getPaginatedEmployees() {
+    const start = (this._currentPage - 1) * this._itemsPerPage;
+    const end = start + this._itemsPerPage;
+    return this._employees.slice(start, end);
+  }
+
+  _handlePageChange(e) {
+    this._currentPage = e.detail.page;
+    this._selectedIds = [];
+  }
+
   renderTableView() {
+    const paginatedEmployees = this._getPaginatedEmployees();
+
     return html`
       <table>
         <thead>
@@ -391,7 +425,7 @@ export class EmployeeList extends LitElement {
           </tr>
         </thead>
         <tbody>
-          ${this._employees.map(
+          ${paginatedEmployees.map(
             (emp) => html`
               <tr>
                 <td class="checkbox-col">
@@ -431,9 +465,11 @@ export class EmployeeList extends LitElement {
   }
 
   renderGridView() {
+    const paginatedEmployees = this._getPaginatedEmployees();
+
     return html`
       <div class="grid-view">
-        ${this._employees.map(
+        ${paginatedEmployees.map(
           (emp) => html`
             <div class="grid-item">
               <div class="grid-item-header">
@@ -508,9 +544,18 @@ export class EmployeeList extends LitElement {
 
       ${this._employees.length === 0
         ? html`<div class="empty">No employees found</div>`
-        : this._viewMode === 'table'
-        ? this.renderTableView()
-        : this.renderGridView()}
+        : html`
+            ${this._viewMode === 'table'
+              ? this.renderTableView()
+              : this.renderGridView()}
+            <pagination-controls
+              .currentPage=${this._currentPage}
+              .totalPages=${this._totalPages}
+              .itemsPerPage=${this._itemsPerPage}
+              .totalItems=${this._employees.length}
+              @page-change=${this._handlePageChange}
+            ></pagination-controls>
+          `}
 
       <confirm-dialog></confirm-dialog>
     `;
