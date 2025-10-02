@@ -18,23 +18,23 @@ export class EmployeeForm extends LitElement {
   static styles = css`
     :host {
       display: block;
-      padding: var(--spacing-xl);
-      max-width: 800px;
+      padding: 2rem;
+      max-width: 900px;
       margin: 0 auto;
     }
 
     h1 {
-      margin: 0 0 var(--spacing-xl) 0;
-      font-size: var(--font-xxxl);
-      color: var(--color-text);
+      margin: 0 0 1.5rem 0;
+      font-size: 1.75rem;
+      color: var(--color-primary);
+      font-weight: var(--weight-semibold);
     }
 
     form {
       background: var(--color-surface);
       padding: 2rem;
       border-radius: var(--radius-lg);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-      border: 1px solid var(--color-border-light);
+      box-shadow: var(--shadow-base);
     }
 
     .form-row {
@@ -54,10 +54,10 @@ export class EmployeeForm extends LitElement {
     }
 
     label {
-      font-weight: var(--weight-semibold);
-      margin-bottom: var(--spacing-sm);
+      font-weight: var(--weight-medium);
+      margin-bottom: 0.5rem;
       color: var(--color-text);
-      font-size: 0.9375rem;
+      font-size: 0.875rem;
       display: block;
     }
 
@@ -68,10 +68,10 @@ export class EmployeeForm extends LitElement {
 
     input,
     select {
-      padding: 0.75rem;
+      padding: 0.625rem 0.875rem;
       border: 1.5px solid var(--color-border);
       border-radius: var(--radius-md);
-      font-size: var(--font-base);
+      font-size: 0.9375rem;
       font-family: inherit;
       background: var(--color-surface);
       color: var(--color-text);
@@ -125,14 +125,12 @@ export class EmployeeForm extends LitElement {
     }
 
     .btn-primary:hover {
-      background: #E55800;
+      background: #e55800;
       color: white;
       box-shadow: 0 4px 8px rgba(255, 98, 0, 0.3);
-      transform: translateY(-1px);
     }
 
     .btn-primary:active {
-      transform: translateY(0);
       box-shadow: 0 1px 2px rgba(255, 98, 0, 0.2);
     }
 
@@ -207,12 +205,34 @@ export class EmployeeForm extends LitElement {
     super.connectedCallback();
     this._boundHandleLangChange = this._handleLanguageChange.bind(this);
     window.addEventListener('language-changed', this._boundHandleLangChange);
-    this._loadEmployee();
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     window.removeEventListener('language-changed', this._boundHandleLangChange);
+  }
+
+  onAfterEnter(location) {
+    if (location.params && location.params.id) {
+      this._employeeId = location.params.id;
+      const employee = employeeStore.getById(this._employeeId);
+
+      if (employee) {
+        this._formData = {
+          firstName: employee.firstName || '',
+          lastName: employee.lastName || '',
+          dateOfEmployment: employee.dateOfEmployment || '',
+          dateOfBirth: employee.dateOfBirth || '',
+          phone: employee.phone || '',
+          email: employee.email || '',
+          department: employee.department || '',
+          position: employee.position || '',
+        };
+      }
+    } else {
+      this._employeeId = null;
+      this._formData = this._getEmptyFormData();
+    }
   }
 
   _handleLanguageChange() {
@@ -230,27 +250,6 @@ export class EmployeeForm extends LitElement {
       department: '',
       position: '',
     };
-  }
-
-  _loadEmployee() {
-    const location = Router.getLocation();
-    if (location && location.params && location.params.id) {
-      this._employeeId = location.params.id;
-      const employee = employeeStore.getById(this._employeeId);
-
-      if (employee) {
-        this._formData = {
-          firstName: employee.firstName || '',
-          lastName: employee.lastName || '',
-          dateOfEmployment: employee.dateOfEmployment || '',
-          dateOfBirth: employee.dateOfBirth || '',
-          phone: employee.phone || '',
-          email: employee.email || '',
-          department: employee.department || '',
-          position: employee.position || '',
-        };
-      }
-    }
   }
 
   handleInput(field, value) {
@@ -397,13 +396,18 @@ export class EmployeeForm extends LitElement {
               ${i18n.t('department')} <span class="required">*</span>
             </label>
             <select
-              .value=${this._formData.department}
               @change=${(e) => this.handleInput('department', e.target.value)}
               class=${this._errors.department ? 'error' : ''}
             >
               <option value="">${i18n.t('selectDepartment')}</option>
               ${DEPARTMENTS.map(
-                (dept) => html`<option value=${dept}>${dept}</option>`
+                (dept) =>
+                  html`<option
+                    value=${dept}
+                    ?selected=${this._formData.department === dept}
+                  >
+                    ${dept}
+                  </option>`
               )}
             </select>
             ${this._errors.department
@@ -418,13 +422,18 @@ export class EmployeeForm extends LitElement {
               ${i18n.t('position')} <span class="required">*</span>
             </label>
             <select
-              .value=${this._formData.position}
               @change=${(e) => this.handleInput('position', e.target.value)}
               class=${this._errors.position ? 'error' : ''}
             >
               <option value="">${i18n.t('selectPosition')}</option>
               ${POSITIONS.map(
-                (pos) => html`<option value=${pos}>${pos}</option>`
+                (pos) =>
+                  html`<option
+                    value=${pos}
+                    ?selected=${this._formData.position === pos}
+                  >
+                    ${pos}
+                  </option>`
               )}
             </select>
             ${this._errors.position

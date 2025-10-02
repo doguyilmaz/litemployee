@@ -74,7 +74,30 @@ function generatePhoneNumber() {
 }
 
 function generateEmail(firstName, lastName) {
-  return `${firstName.toLowerCase()}.${lastName.toLowerCase()}@company.com`;
+  const turkishToEnglish = {
+    ğ: 'g',
+    Ğ: 'g',
+    ü: 'u',
+    Ü: 'u',
+    ş: 's',
+    Ş: 's',
+    ı: 'i',
+    İ: 'i',
+    ö: 'o',
+    Ö: 'o',
+    ç: 'c',
+    Ç: 'c',
+  };
+
+  const cleanString = (str) =>
+    str
+      .split('')
+      .map((char) => turkishToEnglish[char] || char)
+      .join('');
+
+  return `${cleanString(firstName).toLowerCase()}.${cleanString(
+    lastName
+  ).toLowerCase()}@company.com`;
 }
 
 function generateBirthDate() {
