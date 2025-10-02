@@ -11,7 +11,7 @@ const translations = {
       'Are you sure you want to delete this employee? This action cannot be undone.',
     firstName: 'First Name',
     lastName: 'Last Name',
-    dateOfEmployment: 'Date of Employment',
+    dateOfEmployment: 'Emp. Date',
     dateOfBirth: 'Date of Birth',
     phone: 'Phone',
     email: 'Email',

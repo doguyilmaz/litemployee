@@ -161,6 +161,7 @@ export class EmployeeList extends LitElement {
       min-width: 1000px;
       border-collapse: collapse;
       background: var(--color-surface);
+      table-layout: fixed;
     }
 
     thead {
@@ -181,6 +182,59 @@ export class EmployeeList extends LitElement {
       padding: 12px 16px;
       font-size: 0.875rem;
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    th:nth-child(2),
+    td:nth-child(2) {
+      width: 100px;
+    }
+
+    th:nth-child(3),
+    td:nth-child(3) {
+      width: 100px;
+    }
+
+    th:nth-child(4),
+    td:nth-child(4) {
+      width: 100px;
+    }
+
+    th:nth-child(5),
+    td:nth-child(5) {
+      width: 100px;
+    }
+
+    th:nth-child(6),
+    td:nth-child(6) {
+      width: 110px;
+    }
+
+    th:nth-child(7),
+    td:nth-child(7) {
+      width: 180px;
+    }
+
+    th:nth-child(8),
+    td:nth-child(8) {
+      width: 140px;
+    }
+
+    th:nth-child(9),
+    td:nth-child(9) {
+      width: 140px;
+    }
+
+    th:nth-child(10),
+    td:nth-child(10) {
+      width: 100px;
+    }
+
+    td:hover {
+      overflow: visible;
+      white-space: normal;
+      word-break: break-word;
     }
 
     th.sortable {
