@@ -2,6 +2,7 @@ import {LitElement, html, css} from 'lit';
 import {Router} from '@vaadin/router';
 import {i18n} from '../i18n/translations.js';
 import {seedEmployees} from '../utils/seed-data.js';
+import './confirm-dialog.js';
 
 export class NavMenu extends LitElement {
   static properties = {
@@ -76,6 +77,7 @@ export class NavMenu extends LitElement {
 
     .btn-add,
     .btn-seed,
+    .btn-clear,
     .btn-lang {
       padding: 6px 12px;
       border-radius: var(--radius-sm);
@@ -120,6 +122,18 @@ export class NavMenu extends LitElement {
     .btn-seed:hover {
       background: var(--color-text);
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-clear {
+      border: 1px solid var(--color-danger);
+      background: var(--color-surface);
+      color: var(--color-danger);
+    }
+
+    .btn-clear:hover {
+      background: var(--color-danger);
+      color: white;
+      box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
     }
 
     .btn-lang {
@@ -191,6 +205,18 @@ export class NavMenu extends LitElement {
     Router.go('/');
   }
 
+  _handleClearData() {
+    const dialog = this.shadowRoot.querySelector('confirm-dialog');
+    dialog.open({
+      title: i18n.t('clearData'),
+      message: i18n.t('confirmClearData'),
+      onConfirm: () => {
+        localStorage.removeItem('employees');
+        window.location.reload();
+      },
+    });
+  }
+
   render() {
     const buttonText = this._lang === 'en' ? 'TR' : 'EN';
 
@@ -206,12 +232,16 @@ export class NavMenu extends LitElement {
         <span class="spacer"></span>
         <div class="nav-actions">
           <button class="btn-seed" @click=${this._handleSeed}>Seed 25</button>
+          <button class="btn-clear" @click=${this._handleClearData}>
+            ${i18n.t('clearData')}
+          </button>
           <a href="/add" class="btn-add">${i18n.t('addNew')}</a>
           <button class="btn-lang" @click=${this._toggleLanguage}>
             ${buttonText}
           </button>
         </div>
       </nav>
+      <confirm-dialog></confirm-dialog>
     `;
   }
 }

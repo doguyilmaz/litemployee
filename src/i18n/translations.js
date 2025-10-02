@@ -29,6 +29,9 @@ const translations = {
     clearSelection: 'Cancel',
     confirmDeleteMultiple:
       'Are you sure you want to delete {count} employees? This action cannot be undone.',
+    clearData: 'Clear Data',
+    confirmClearData:
+      'Are you sure you want to clear all employee data? This action cannot be undone.',
   },
   tr: {
     employeeList: 'Çalışanlar',
@@ -60,6 +63,9 @@ const translations = {
     clearSelection: 'İptal',
     confirmDeleteMultiple:
       '{count} çalışanı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.',
+    clearData: 'Verileri Temizle',
+    confirmClearData:
+      'Tüm çalışan verilerini temizlemek istediğinizden emin misiniz? Bu işlem geri alınamaz.',
   },
 };
 
