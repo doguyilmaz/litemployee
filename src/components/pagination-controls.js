@@ -1,4 +1,5 @@
 import {LitElement, html, css} from 'lit';
+import {i18n} from '../i18n/translations.js';
 
 export class PaginationControls extends LitElement {
   static properties = {
@@ -6,6 +7,7 @@ export class PaginationControls extends LitElement {
     totalPages: {type: Number},
     itemsPerPage: {type: Number},
     totalItems: {type: Number},
+    _lang: {type: String, state: true},
   };
 
   static styles = css`
@@ -96,6 +98,22 @@ export class PaginationControls extends LitElement {
     this.totalPages = 1;
     this.itemsPerPage = 10;
     this.totalItems = 0;
+    this._lang = i18n.getCurrentLanguage();
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    this._boundHandleLangChange = this._handleLanguageChange.bind(this);
+    window.addEventListener('language-changed', this._boundHandleLangChange);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    window.removeEventListener('language-changed', this._boundHandleLangChange);
+  }
+
+  _handleLanguageChange(e) {
+    this._lang = e.detail.lang;
   }
 
   _handlePageChange(page) {
@@ -162,7 +180,8 @@ export class PaginationControls extends LitElement {
     return html`
       <div class="pagination-container">
         <div class="pagination-info">
-          Showing ${startItem}-${endItem} of ${this.totalItems}
+          ${i18n.t('showing')} ${startItem}-${endItem} ${i18n.t('of')}
+          ${this.totalItems}
         </div>
         <div class="pagination-controls">
           <button

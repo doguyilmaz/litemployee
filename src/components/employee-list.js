@@ -416,12 +416,15 @@ export class EmployeeList extends LitElement {
                 @change=${this._toggleSelectAll}
               />
             </th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Email</th>
-            <th>Department</th>
-            <th>Position</th>
-            <th>Actions</th>
+            <th>${i18n.t('firstName')}</th>
+            <th>${i18n.t('lastName')}</th>
+            <th>${i18n.t('dateOfEmployment')}</th>
+            <th>${i18n.t('dateOfBirth')}</th>
+            <th>${i18n.t('phone')}</th>
+            <th>${i18n.t('email')}</th>
+            <th>${i18n.t('department')}</th>
+            <th>${i18n.t('position')}</th>
+            <th>${i18n.t('actions')}</th>
           </tr>
         </thead>
         <tbody>
@@ -437,6 +440,9 @@ export class EmployeeList extends LitElement {
                 </td>
                 <td>${emp.firstName}</td>
                 <td>${emp.lastName}</td>
+                <td>${emp.dateOfEmployment}</td>
+                <td>${emp.dateOfBirth}</td>
+                <td>${emp.phone}</td>
                 <td>${emp.email}</td>
                 <td>${emp.department}</td>
                 <td>${emp.position}</td>

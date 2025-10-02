@@ -21,6 +21,9 @@ const translations = {
     selectPosition: 'Select Position',
     save: 'Save',
     cancel: 'Cancel',
+    actions: 'Actions',
+    showing: 'Showing',
+    of: 'of',
   },
   tr: {
     employeeList: 'Çalışanlar',
@@ -44,6 +47,9 @@ const translations = {
     selectPosition: 'Pozisyon Seçin',
     save: 'Kaydet',
     cancel: 'İptal',
+    actions: 'İşlemler',
+    showing: 'Gösteriliyor',
+    of: '/',
   },
 };
 

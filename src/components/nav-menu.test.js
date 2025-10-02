@@ -22,14 +22,14 @@ suite('nav-menu', () => {
 
   test('renders language toggle button', async () => {
     const el = await fixture(html`<nav-menu></nav-menu>`);
-    const button = el.shadowRoot.querySelector('button');
+    const button = el.shadowRoot.querySelector('.btn-lang');
     assert.exists(button);
     assert.equal(button.textContent.trim(), 'TR');
   });
 
   test('toggles language when button clicked', async () => {
     const el = await fixture(html`<nav-menu></nav-menu>`);
-    const button = el.shadowRoot.querySelector('button');
+    const button = el.shadowRoot.querySelector('.btn-lang');
 
     button.click();
     await el.updateComplete;
@@ -40,7 +40,7 @@ suite('nav-menu', () => {
 
   test('persists language to localStorage', async () => {
     const el = await fixture(html`<nav-menu></nav-menu>`);
-    const button = el.shadowRoot.querySelector('button');
+    const button = el.shadowRoot.querySelector('.btn-lang');
 
     button.click();
     await el.updateComplete;
@@ -53,7 +53,7 @@ suite('nav-menu', () => {
     i18n.init();
 
     const el = await fixture(html`<nav-menu></nav-menu>`);
-    const button = el.shadowRoot.querySelector('button');
+    const button = el.shadowRoot.querySelector('.btn-lang');
 
     assert.equal(button.textContent.trim(), 'EN');
     assert.equal(i18n.getCurrentLanguage(), 'tr');
@@ -65,7 +65,7 @@ suite('nav-menu', () => {
     i18n.set('tr');
     await el.updateComplete;
 
-    const button = el.shadowRoot.querySelector('button');
+    const button = el.shadowRoot.querySelector('.btn-lang');
     assert.equal(button.textContent.trim(), 'EN');
   });
 
