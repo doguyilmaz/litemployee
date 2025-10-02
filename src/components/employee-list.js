@@ -468,7 +468,7 @@ export class EmployeeList extends LitElement {
   constructor() {
     super();
     this._employees = [];
-    this._viewMode = 'table';
+    this._viewMode = localStorage.getItem('viewMode') || 'table';
     this._selectedIds = [];
     this._currentPage = 1;
     this._itemsPerPage = 10;
@@ -511,6 +511,7 @@ export class EmployeeList extends LitElement {
 
   _setViewMode(mode) {
     this._viewMode = mode;
+    localStorage.setItem('viewMode', mode);
   }
 
   _handleEdit(id) {
