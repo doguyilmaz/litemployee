@@ -90,9 +90,10 @@ export class NavMenu extends LitElement {
       gap: var(--spacing-sm);
     }
 
-    .btn-add:hover,
-    .btn-seed:hover {
+    .btn-add:hover {
       background: var(--color-primary-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(255, 98, 0, 0.3);
     }
 
     .btn-add::before {
@@ -108,6 +109,8 @@ export class NavMenu extends LitElement {
 
     .btn-seed:hover {
       background: var(--color-text);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
     }
 
     .btn-lang {

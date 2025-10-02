@@ -29,6 +29,14 @@ export class EmployeeList extends LitElement {
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1.5rem;
+      gap: var(--spacing-lg);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-lg);
+      flex: 1;
     }
 
     h1 {
@@ -36,6 +44,55 @@ export class EmployeeList extends LitElement {
       font-size: var(--font-xxxl);
       color: var(--color-primary);
       font-weight: var(--weight-semibold);
+    }
+
+    .bulk-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-sm) var(--spacing-md);
+      background: var(--color-primary-light);
+      border: 1px solid var(--color-primary);
+      border-radius: var(--radius-md);
+    }
+
+    .selection-count {
+      font-size: var(--font-sm);
+      font-weight: var(--weight-medium);
+      color: var(--color-primary);
+    }
+
+    .btn-bulk-delete,
+    .btn-clear-selection {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: var(--font-sm);
+      font-weight: var(--weight-medium);
+      cursor: pointer;
+      transition: all 0.2s;
+      background: transparent;
+    }
+
+    .btn-bulk-delete {
+      color: var(--color-danger);
+    }
+
+    .btn-bulk-delete:hover {
+      background: var(--color-danger);
+      color: var(--color-surface);
+    }
+
+    .btn-clear-selection {
+      color: var(--color-text-light);
+    }
+
+    .btn-clear-selection:hover {
+      background: rgba(0, 0, 0, 0.05);
+      color: var(--color-text);
     }
 
     .view-controls {
@@ -404,6 +461,12 @@ export class EmployeeList extends LitElement {
     this._selectedIds = [];
   }
 
+  _handlePageSizeChange(e) {
+    this._itemsPerPage = e.detail.size;
+    this._currentPage = 1;
+    this._selectedIds = [];
+  }
+
   renderTableView() {
     const paginatedEmployees = this._getPaginatedEmployees();
 
@@ -499,12 +562,18 @@ export class EmployeeList extends LitElement {
                   <span class="grid-item-value">${emp.phone}</span>
                 </div>
                 <div class="grid-item-field">
-                  <span class="grid-item-label">${i18n.t('dateOfEmployment')}:</span>
-                  <span class="grid-item-value">${formatDate(emp.dateOfEmployment)}</span>
+                  <span class="grid-item-label"
+                    >${i18n.t('dateOfEmployment')}:</span
+                  >
+                  <span class="grid-item-value"
+                    >${formatDate(emp.dateOfEmployment)}</span
+                  >
                 </div>
                 <div class="grid-item-field">
                   <span class="grid-item-label">${i18n.t('dateOfBirth')}:</span>
-                  <span class="grid-item-value">${formatDate(emp.dateOfBirth)}</span>
+                  <span class="grid-item-value"
+                    >${formatDate(emp.dateOfBirth)}</span
+                  >
                 </div>
                 <div class="grid-item-field">
                   <span class="grid-item-label">${i18n.t('department')}:</span>
@@ -536,10 +605,68 @@ export class EmployeeList extends LitElement {
     `;
   }
 
+  _handleBulkDelete() {
+    if (this._selectedIds.length === 0) return;
+
+    const dialog = this.shadowRoot.querySelector('confirm-dialog');
+    const count = this._selectedIds.length;
+    dialog.open({
+      title: i18n.t('confirmDelete'),
+      message:
+        count === 1
+          ? i18n.t('confirmDeleteMessage')
+          : i18n.t('confirmDeleteMultiple').replace('{count}', count),
+      onConfirm: () => {
+        this._selectedIds.forEach((id) => {
+          employeeStore.delete(id);
+        });
+        this._selectedIds = [];
+        this._loadEmployees();
+      },
+    });
+  }
+
+  _handleClearSelection() {
+    this._selectedIds = [];
+  }
+
   render() {
     return html`
       <div class="header">
-        <h1>${i18n.t('employeeList')}</h1>
+        <div class="header-left">
+          <h1>${i18n.t('employeeList')}</h1>
+          ${this._selectedIds.length > 0
+            ? html`
+                <div class="bulk-actions">
+                  <span class="selection-count">
+                    ${this._selectedIds.length} ${i18n.t('employeesSelected')}
+                  </span>
+                  <button
+                    class="btn-bulk-delete"
+                    @click=${this._handleBulkDelete}
+                  >
+                    <iconify-icon
+                      icon="lucide:trash-2"
+                      width="16"
+                      height="16"
+                    ></iconify-icon>
+                    ${i18n.t('delete')}
+                  </button>
+                  <button
+                    class="btn-clear-selection"
+                    @click=${this._handleClearSelection}
+                  >
+                    <iconify-icon
+                      icon="lucide:x"
+                      width="16"
+                      height="16"
+                    ></iconify-icon>
+                    ${i18n.t('clearSelection')}
+                  </button>
+                </div>
+              `
+            : ''}
+        </div>
         <div class="view-controls">
           <button
             class="view-btn ${this._viewMode === 'table' ? 'active' : ''}"
@@ -570,6 +697,7 @@ export class EmployeeList extends LitElement {
               .itemsPerPage=${this._itemsPerPage}
               .totalItems=${this._employees.length}
               @page-change=${this._handlePageChange}
+              @page-size-change=${this._handlePageSizeChange}
             ></pagination-controls>
           `}
 

@@ -24,6 +24,11 @@ const translations = {
     actions: 'Actions',
     showing: 'Showing',
     of: 'of',
+    itemsPerPage: 'Items per page',
+    employeesSelected: 'employees selected',
+    clearSelection: 'Cancel',
+    confirmDeleteMultiple:
+      'Are you sure you want to delete {count} employees? This action cannot be undone.',
   },
   tr: {
     employeeList: 'Çalışanlar',
@@ -50,6 +55,11 @@ const translations = {
     actions: 'İşlemler',
     showing: 'Gösteriliyor',
     of: '/',
+    itemsPerPage: 'Sayfa başına',
+    employeesSelected: 'çalışan seçildi',
+    clearSelection: 'İptal',
+    confirmDeleteMultiple:
+      '{count} çalışanı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.',
   },
 };
 

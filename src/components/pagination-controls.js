@@ -26,6 +26,41 @@ export class PaginationControls extends LitElement {
     .pagination-info {
       color: var(--color-text-light);
       font-size: var(--font-sm);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+
+    .page-size-selector {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .page-size-selector label {
+      color: var(--color-text-light);
+      font-size: var(--font-sm);
+    }
+
+    .page-size-selector select {
+      padding: 4px 8px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-surface);
+      color: var(--color-text);
+      font-size: var(--font-sm);
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .page-size-selector select:hover {
+      border-color: var(--color-primary);
+    }
+
+    .page-size-selector select:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(255, 98, 0, 0.1);
     }
 
     .pagination-controls {
@@ -130,6 +165,17 @@ export class PaginationControls extends LitElement {
     );
   }
 
+  _handlePageSizeChange(e) {
+    const newSize = parseInt(e.target.value, 10);
+    this.dispatchEvent(
+      new CustomEvent('page-size-change', {
+        detail: {size: newSize},
+        bubbles: true,
+        composed: true,
+      })
+    );
+  }
+
   _getVisiblePages() {
     const pages = [];
     const maxVisible = 7;
@@ -180,8 +226,22 @@ export class PaginationControls extends LitElement {
     return html`
       <div class="pagination-container">
         <div class="pagination-info">
-          ${i18n.t('showing')} ${startItem}-${endItem} ${i18n.t('of')}
-          ${this.totalItems}
+          <span>
+            ${i18n.t('showing')} ${startItem}-${endItem} ${i18n.t('of')}
+            ${this.totalItems}
+          </span>
+          <div class="page-size-selector">
+            <label>${i18n.t('itemsPerPage')}:</label>
+            <select
+              .value=${this.itemsPerPage.toString()}
+              @change=${this._handlePageSizeChange}
+            >
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+          </div>
         </div>
         <div class="pagination-controls">
           <button
