@@ -24,7 +24,7 @@ suite('nav-menu', () => {
     const el = await fixture(html`<nav-menu></nav-menu>`);
     const button = el.shadowRoot.querySelector('button');
     assert.exists(button);
-    assert.equal(button.textContent, 'TR');
+    assert.equal(button.textContent.trim(), 'TR');
   });
 
   test('toggles language when button clicked', async () => {
@@ -34,7 +34,7 @@ suite('nav-menu', () => {
     button.click();
     await el.updateComplete;
 
-    assert.equal(button.textContent, 'EN');
+    assert.equal(button.textContent.trim(), 'EN');
     assert.equal(i18n.getCurrentLanguage(), 'tr');
   });
 
@@ -55,7 +55,7 @@ suite('nav-menu', () => {
     const el = await fixture(html`<nav-menu></nav-menu>`);
     const button = el.shadowRoot.querySelector('button');
 
-    assert.equal(button.textContent, 'EN');
+    assert.equal(button.textContent.trim(), 'EN');
     assert.equal(i18n.getCurrentLanguage(), 'tr');
   });
 
@@ -66,7 +66,7 @@ suite('nav-menu', () => {
     await el.updateComplete;
 
     const button = el.shadowRoot.querySelector('button');
-    assert.equal(button.textContent, 'EN');
+    assert.equal(button.textContent.trim(), 'EN');
   });
 
   test('renders translated add button', async () => {

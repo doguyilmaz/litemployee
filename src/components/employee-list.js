@@ -7,6 +7,7 @@ export class EmployeeList extends LitElement {
   static properties = {
     employees: {type: Array, state: true},
     viewMode: {type: String, state: true},
+    selectedIds: {type: Set, state: true},
   };
 
   static styles = css`
@@ -31,20 +32,41 @@ export class EmployeeList extends LitElement {
       font-weight: var(--weight-semibold);
     }
 
-    .view-toggle {
-      padding: var(--spacing-sm) var(--spacing-md);
-      border: 1px solid var(--color-primary);
-      border-radius: var(--radius-sm);
-      background: var(--color-surface);
-      color: var(--color-primary);
-      font-weight: var(--weight-medium);
-      cursor: pointer;
-      transition: all 0.2s;
+    .view-controls {
+      display: flex;
+      gap: var(--spacing-sm);
     }
 
-    .view-toggle:hover {
+    .view-btn {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border: 1.5px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      color: var(--color-text-light);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+
+    .view-btn:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    .view-btn.active {
       background: var(--color-primary);
+      border-color: var(--color-primary);
       color: var(--color-surface);
+    }
+
+    .view-btn.active:hover {
+      background: var(--color-primary-hover);
+      border-color: var(--color-primary-hover);
     }
 
     table {
@@ -68,6 +90,20 @@ export class EmployeeList extends LitElement {
       border-bottom: 2px solid var(--color-border-light);
     }
 
+    th.checkbox-col,
+    td.checkbox-col {
+      width: 40px;
+      text-align: center;
+      padding: var(--spacing-sm);
+    }
+
+    input[type='checkbox'] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: var(--color-primary);
+    }
+
     td {
       padding: var(--spacing-md);
       border-bottom: 1px solid var(--color-border-light);
@@ -78,29 +114,60 @@ export class EmployeeList extends LitElement {
       background: var(--color-background);
     }
 
-    .list-view {
+    .grid-view {
       display: grid;
-      gap: 1rem;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
     }
 
-    .list-item {
+    .grid-item {
       background: var(--color-surface);
-      padding: var(--spacing-lg);
+      padding: 1.5rem;
       border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-base);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      border: 1px solid var(--color-border-light);
+      display: flex;
+      flex-direction: column;
     }
 
-    .list-item-header {
+    .grid-item-header {
       font-weight: var(--weight-semibold);
       font-size: var(--font-lg);
-      margin-bottom: var(--spacing-sm);
-      color: var(--color-text);
+      margin-bottom: var(--spacing-md);
+      color: var(--color-primary);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
     }
 
-    .list-item-detail {
-      color: var(--color-text-light);
-      margin: var(--spacing-xs) 0;
+    .grid-item-checkbox {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: var(--color-primary);
+    }
+
+    .grid-item-info {
+      flex: 1;
+      margin-bottom: var(--spacing-md);
+    }
+
+    .grid-item-field {
+      color: var(--color-text);
+      margin: var(--spacing-sm) 0;
       font-size: var(--font-sm);
+      display: flex;
+      gap: var(--spacing-xs);
+    }
+
+    .grid-item-label {
+      font-weight: var(--weight-semibold);
+      color: var(--color-text-light);
+      min-width: 80px;
+    }
+
+    .grid-item-value {
+      color: var(--color-text);
     }
 
     .actions {
@@ -147,6 +214,13 @@ export class EmployeeList extends LitElement {
       font-size: var(--font-lg);
     }
 
+    @media (max-width: 1024px) {
+      .grid-view {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+      }
+    }
+
     @media (max-width: 768px) {
       :host {
         padding: 1rem;
@@ -160,11 +234,15 @@ export class EmployeeList extends LitElement {
         display: none;
       }
 
-      .view-toggle {
+      .view-controls {
         display: none;
       }
 
-      .list-item {
+      .grid-view {
+        grid-template-columns: 1fr;
+      }
+
+      .grid-item {
         padding: 1rem;
       }
 
@@ -187,11 +265,11 @@ export class EmployeeList extends LitElement {
         font-size: 1.25rem;
       }
 
-      .list-item-header {
+      .grid-item-header {
         font-size: 1rem;
       }
 
-      .list-item-detail {
+      .grid-item-field {
         font-size: 0.875rem;
       }
 
@@ -206,6 +284,7 @@ export class EmployeeList extends LitElement {
     super();
     this.employees = [];
     this.viewMode = 'table';
+    this.selectedIds = new Set();
     this.loadEmployees();
     this.boundHandleChange = this.handleEmployeesChange.bind(this);
     this.boundHandleLangChange = this.handleLanguageChange.bind(this);
@@ -238,8 +317,8 @@ export class EmployeeList extends LitElement {
     this.loadEmployees();
   }
 
-  toggleView() {
-    this.viewMode = this.viewMode === 'table' ? 'list' : 'table';
+  setViewMode(mode) {
+    this.viewMode = mode;
   }
 
   handleEdit(id) {
@@ -255,11 +334,43 @@ export class EmployeeList extends LitElement {
     });
   }
 
+  toggleSelectAll(e) {
+    if (e.target.checked) {
+      this.selectedIds = new Set(this.employees.map((emp) => emp.id));
+    } else {
+      this.selectedIds = new Set();
+    }
+  }
+
+  toggleSelect(id, e) {
+    const newSelected = new Set(this.selectedIds);
+    if (e.target.checked) {
+      newSelected.add(id);
+    } else {
+      newSelected.delete(id);
+    }
+    this.selectedIds = newSelected;
+  }
+
+  get isAllSelected() {
+    return (
+      this.employees.length > 0 &&
+      this.employees.every((emp) => this.selectedIds.has(emp.id))
+    );
+  }
+
   renderTableView() {
     return html`
       <table>
         <thead>
           <tr>
+            <th class="checkbox-col">
+              <input
+                type="checkbox"
+                .checked=${this.isAllSelected}
+                @change=${this.toggleSelectAll}
+              />
+            </th>
             <th>First Name</th>
             <th>Last Name</th>
             <th>Email</th>
@@ -272,6 +383,13 @@ export class EmployeeList extends LitElement {
           ${this.employees.map(
             (emp) => html`
               <tr>
+                <td class="checkbox-col">
+                  <input
+                    type="checkbox"
+                    .checked=${this.selectedIds.has(emp.id)}
+                    @change=${(e) => this.toggleSelect(emp.id, e)}
+                  />
+                </td>
                 <td>${emp.firstName}</td>
                 <td>${emp.lastName}</td>
                 <td>${emp.email}</td>
@@ -301,20 +419,40 @@ export class EmployeeList extends LitElement {
     `;
   }
 
-  renderListView() {
+  renderGridView() {
     return html`
-      <div class="list-view">
+      <div class="grid-view">
         ${this.employees.map(
           (emp) => html`
-            <div class="list-item">
-              <div class="list-item-header">
-                ${emp.firstName} ${emp.lastName}
+            <div class="grid-item">
+              <div class="grid-item-header">
+                <input
+                  type="checkbox"
+                  class="grid-item-checkbox"
+                  .checked=${this.selectedIds.has(emp.id)}
+                  @change=${(e) => this.toggleSelect(emp.id, e)}
+                />
+                <span>${emp.firstName} ${emp.lastName}</span>
               </div>
-              <div class="list-item-detail">${emp.email}</div>
-              <div class="list-item-detail">
-                ${emp.department} - ${emp.position}
+              <div class="grid-item-info">
+                <div class="grid-item-field">
+                  <span class="grid-item-label">Email:</span>
+                  <span class="grid-item-value">${emp.email}</span>
+                </div>
+                <div class="grid-item-field">
+                  <span class="grid-item-label">Phone:</span>
+                  <span class="grid-item-value">${emp.phone}</span>
+                </div>
+                <div class="grid-item-field">
+                  <span class="grid-item-label">Department:</span>
+                  <span class="grid-item-value">${emp.department}</span>
+                </div>
+                <div class="grid-item-field">
+                  <span class="grid-item-label">Position:</span>
+                  <span class="grid-item-value">${emp.position}</span>
+                </div>
               </div>
-              <div class="actions" style="margin-top: 1rem;">
+              <div class="actions">
                 <button
                   class="btn btn-edit"
                   @click=${() => this.handleEdit(emp.id)}
@@ -339,16 +477,29 @@ export class EmployeeList extends LitElement {
     return html`
       <div class="header">
         <h1>${i18n.t('employeeList')}</h1>
-        <button class="view-toggle" @click=${this.toggleView}>
-          ${this.viewMode === 'table' ? 'List View' : 'Table View'}
-        </button>
+        <div class="view-controls">
+          <button
+            class="view-btn ${this.viewMode === 'table' ? 'active' : ''}"
+            @click=${() => this.setViewMode('table')}
+            title="Table View"
+          >
+            ☰
+          </button>
+          <button
+            class="view-btn ${this.viewMode === 'grid' ? 'active' : ''}"
+            @click=${() => this.setViewMode('grid')}
+            title="Grid View"
+          >
+            ▦
+          </button>
+        </div>
       </div>
 
       ${this.employees.length === 0
         ? html`<div class="empty">No employees found</div>`
         : this.viewMode === 'table'
         ? this.renderTableView()
-        : this.renderListView()}
+        : this.renderGridView()}
 
       <confirm-dialog></confirm-dialog>
     `;
