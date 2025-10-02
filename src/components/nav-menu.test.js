@@ -13,8 +13,11 @@ suite('nav-menu', () => {
     const nav = el.shadowRoot.querySelector('nav');
     assert.exists(nav);
 
-    const links = el.shadowRoot.querySelectorAll('a');
-    assert.lengthOf(links, 2);
+    const brand = el.shadowRoot.querySelector('.brand');
+    assert.exists(brand);
+
+    const addButton = el.shadowRoot.querySelector('.btn-add');
+    assert.exists(addButton);
   });
 
   test('renders language toggle button', async () => {
@@ -66,15 +69,15 @@ suite('nav-menu', () => {
     assert.equal(button.textContent, 'EN');
   });
 
-  test('renders translated links', async () => {
+  test('renders translated add button', async () => {
     const el = await fixture(html`<nav-menu></nav-menu>`);
-    let links = el.shadowRoot.querySelectorAll('a');
-    assert.equal(links[0].textContent, 'Employees');
+    let addBtn = el.shadowRoot.querySelector('.btn-add');
+    assert.include(addBtn.textContent, 'Add New');
 
     i18n.set('tr');
     await el.updateComplete;
 
-    links = el.shadowRoot.querySelectorAll('a');
-    assert.equal(links[0].textContent, 'Çalışanlar');
+    addBtn = el.shadowRoot.querySelector('.btn-add');
+    assert.include(addBtn.textContent, 'Yeni Ekle');
   });
 });

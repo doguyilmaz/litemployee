@@ -2,10 +2,13 @@ const translations = {
   en: {
     employeeList: 'Employees',
     addEmployee: 'Add Employee',
+    addNew: 'Add New',
     editEmployee: 'Edit Employee',
     edit: 'Edit',
     delete: 'Delete',
-    confirmDelete: 'Are you sure you want to delete this employee?',
+    confirmDelete: 'Confirm Delete',
+    confirmDeleteMessage:
+      'Are you sure you want to delete this employee? This action cannot be undone.',
     firstName: 'First Name',
     lastName: 'Last Name',
     dateOfEmployment: 'Date of Employment',
@@ -22,10 +25,13 @@ const translations = {
   tr: {
     employeeList: 'Çalışanlar',
     addEmployee: 'Çalışan Ekle',
+    addNew: 'Yeni Ekle',
     editEmployee: 'Çalışanı Düzenle',
     edit: 'Düzenle',
     delete: 'Sil',
-    confirmDelete: 'Bu çalışanı silmek istediğinizden emin misiniz?',
+    confirmDelete: 'Silmeyi Onayla',
+    confirmDeleteMessage:
+      'Bu çalışanı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.',
     firstName: 'Ad',
     lastName: 'Soyad',
     dateOfEmployment: 'İşe Başlama Tarihi',

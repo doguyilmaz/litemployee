@@ -1,6 +1,7 @@
 import {LitElement, html, css} from 'lit';
 import {employeeStore} from '../store/employee-store.js';
 import {i18n} from '../i18n/translations.js';
+import './confirm-dialog.js';
 
 export class EmployeeList extends LitElement {
   static properties = {
@@ -246,9 +247,12 @@ export class EmployeeList extends LitElement {
   }
 
   handleDelete(id) {
-    if (confirm(i18n.t('confirmDelete'))) {
-      employeeStore.delete(id);
-    }
+    const dialog = this.shadowRoot.querySelector('confirm-dialog');
+    dialog.open({
+      onConfirm: () => {
+        employeeStore.delete(id);
+      },
+    });
   }
 
   renderTableView() {
@@ -345,6 +349,8 @@ export class EmployeeList extends LitElement {
         : this.viewMode === 'table'
         ? this.renderTableView()
         : this.renderListView()}
+
+      <confirm-dialog></confirm-dialog>
     `;
   }
 }

@@ -9,6 +9,7 @@ export class NavMenu extends LitElement {
   static styles = css`
     :host {
       display: block;
+      background: var(--color-surface);
       border-bottom: 1px solid var(--color-border-light);
     }
 
@@ -19,6 +20,35 @@ export class NavMenu extends LitElement {
       padding: var(--spacing-md) var(--spacing-xl);
       max-width: 1200px;
       margin: 0 auto;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      font-weight: var(--weight-semibold);
+      font-size: var(--font-lg);
+      color: var(--color-text);
+      text-decoration: none;
+    }
+
+    .logo {
+      width: 32px;
+      height: 32px;
+      background: var(--color-primary);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-surface);
+      font-weight: var(--weight-bold);
+      font-size: var(--font-sm);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-lg);
     }
 
     a {
@@ -36,7 +66,38 @@ export class NavMenu extends LitElement {
       margin-left: auto;
     }
 
-    button {
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+
+    .btn-add {
+      padding: var(--spacing-sm) var(--spacing-lg);
+      border: none;
+      border-radius: var(--radius-sm);
+      background: var(--color-primary);
+      color: var(--color-surface);
+      font-weight: var(--weight-medium);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .btn-add:hover {
+      background: var(--color-primary-hover);
+    }
+
+    .btn-add::before {
+      content: '+';
+      font-size: var(--font-lg);
+      font-weight: var(--weight-bold);
+    }
+
+    .btn-lang {
       padding: var(--spacing-sm) var(--spacing-md);
       border: 1px solid var(--color-primary);
       border-radius: var(--radius-sm);
@@ -45,26 +106,36 @@ export class NavMenu extends LitElement {
       font-weight: var(--weight-medium);
       cursor: pointer;
       transition: all 0.2s;
+      min-width: 48px;
     }
 
-    button:hover {
+    .btn-lang:hover {
       background: var(--color-primary);
       color: var(--color-surface);
     }
 
-    @media (max-width: 640px) {
+    @media (max-width: 768px) {
       nav {
         flex-wrap: wrap;
         padding: var(--spacing-md);
         gap: var(--spacing-md);
       }
 
+      .nav-links {
+        display: none;
+      }
+
       .spacer {
         display: none;
       }
 
-      button {
-        width: 100%;
+      .nav-actions {
+        flex: 1;
+        justify-content: flex-end;
+      }
+
+      .btn-add {
+        flex: 1;
       }
     }
   `;
@@ -98,10 +169,20 @@ export class NavMenu extends LitElement {
 
     return html`
       <nav>
-        <a href="/">${i18n.t('employeeList')}</a>
-        <a href="/add">${i18n.t('addEmployee')}</a>
+        <a href="/" class="brand">
+          <div class="logo">ING</div>
+          <span>Employee Management</span>
+        </a>
+        <div class="nav-links">
+          <a href="/">${i18n.t('employeeList')}</a>
+        </div>
         <span class="spacer"></span>
-        <button @click=${this.toggleLanguage}>${buttonText}</button>
+        <div class="nav-actions">
+          <a href="/add" class="btn-add">${i18n.t('addNew')}</a>
+          <button class="btn-lang" @click=${this.toggleLanguage}>
+            ${buttonText}
+          </button>
+        </div>
       </nav>
     `;
   }

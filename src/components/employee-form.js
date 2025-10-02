@@ -30,9 +30,10 @@ export class EmployeeForm extends LitElement {
 
     form {
       background: var(--color-surface);
-      padding: var(--spacing-xl);
+      padding: 2rem;
       border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-base);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      border: 1px solid var(--color-border-light);
     }
 
     .form-row {
@@ -52,34 +53,43 @@ export class EmployeeForm extends LitElement {
     }
 
     label {
-      font-weight: var(--weight-medium);
+      font-weight: var(--weight-semibold);
       margin-bottom: var(--spacing-sm);
       color: var(--color-text);
+      font-size: 0.9375rem;
+      display: block;
     }
 
     label .required {
       color: var(--color-danger);
+      margin-left: 2px;
     }
 
     input,
     select {
-      padding: 0.625rem;
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-sm);
+      padding: 0.75rem;
+      border: 1.5px solid var(--color-border);
+      border-radius: var(--radius-md);
       font-size: var(--font-base);
       font-family: inherit;
-      transition: border-color 0.2s;
+      background: var(--color-surface);
+      color: var(--color-text);
+      transition: all 0.2s;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     input:focus,
     select:focus {
       outline: none;
       border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(255, 98, 0, 0.1);
     }
 
     input.error,
     select.error {
       border-color: var(--color-danger);
+      background: rgba(255, 59, 48, 0.05);
     }
 
     .error-message {
@@ -97,35 +107,42 @@ export class EmployeeForm extends LitElement {
     }
 
     .btn {
-      padding: 0.625rem var(--spacing-lg);
-      border: 1px solid;
-      border-radius: var(--radius-sm);
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: var(--radius-md);
       font-size: var(--font-base);
-      font-weight: var(--weight-medium);
+      font-weight: var(--weight-semibold);
       cursor: pointer;
       transition: all 0.2s;
+      min-width: 120px;
     }
 
     .btn-primary {
       background: var(--color-primary);
-      border-color: var(--color-primary);
       color: var(--color-surface);
+      box-shadow: 0 2px 4px rgba(255, 98, 0, 0.2);
     }
 
     .btn-primary:hover {
       background: var(--color-primary-hover);
-      border-color: var(--color-primary-hover);
+      box-shadow: 0 4px 8px rgba(255, 98, 0, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+      box-shadow: 0 1px 2px rgba(255, 98, 0, 0.2);
     }
 
     .btn-secondary {
       background: var(--color-surface);
-      border-color: var(--color-text-light);
-      color: var(--color-text-light);
+      border: 1.5px solid var(--color-border);
+      color: var(--color-text);
     }
 
     .btn-secondary:hover {
-      background: var(--color-text-light);
-      color: var(--color-surface);
+      background: var(--color-background);
+      border-color: var(--color-text-light);
     }
 
     @media (max-width: 768px) {
